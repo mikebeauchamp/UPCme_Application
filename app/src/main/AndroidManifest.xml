@@ -2,6 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+<!--    https://developer.android.com/guide/topics/manifest/uses-feature-element-->
+<!--    The purpose of a <uses-feature> declaration is to inform any external entity-->
+<!--    of the set of hardware and software features your application depends on. -->
+<!--    The element offers a required attribute that lets you specify whether your application requires -->
+<!--    and can't function without the declared feature or prefers to have the feature but can function without it.-->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
