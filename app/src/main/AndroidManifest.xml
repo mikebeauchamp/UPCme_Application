@@ -8,6 +8,7 @@
 <!--    The element offers a required attribute that lets you specify whether your application requires -->
 <!--    and can't function without the declared feature or prefers to have the feature but can function without it.-->
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <uses-feature
         android:name="android.hardware.camera"
