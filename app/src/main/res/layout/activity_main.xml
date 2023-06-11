@@ -27,7 +27,87 @@
         android:text="Scan something..."
         android:textColor="@android:color/black"/>
 
+    <ScrollView
+        android:id="@+id/sv_productdataview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tv_textview">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_ProductTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="PRODUCT TITLE PLACEHOLDER"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/tv_ProductDescriptionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="PRODUCT DESCRIPTION PLACEHOLDER"
+                android:layout_below="@+id/tv_ProductTitleTextView"
+                android:textColor="@android:color/black" />
+
+            <ImageView
+                android:id="@+id/ProductImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_ProductDescriptionTextView"
+                android:layout_centerInParent="true"/>
+
+            <TextView
+                android:id="@+id/tv_AmazonRatingTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="AMAZON RATING PLACEHOLDER"
+                android:layout_below="@+id/ProductImageView"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/tv_amazonReviewTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="AMAZON REVIEW PLACEHOLDER"
+                android:layout_below="@+id/tv_amazonRatingTextView"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/tv_amazonPricetTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="AMAZON PRICE PLACEHOLDER"
+                android:layout_below="@+id/tv_amazonReviewTextView"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/tv_amazonPrimeFlagTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="AMAZON PRIME PLACEHOLDER"
+                android:layout_below="@+id/tv_amazonPriceTextView"
+                android:textColor="@android:color/black" />
+
+            <ListView
+                android:id="@+id/lv_OtherOnlineSellerListview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_below="@+id/tv_amazonPrimeFlagTextView"/>
+
+
+        </LinearLayout>
+    </ScrollView>
 
 
 </RelativeLayout>
