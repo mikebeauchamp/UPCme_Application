@@ -132,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(this, REQUEST_CAMERA_PERMISSION))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage("The UPCme application is unavailable because it is dependent on the Camera permission you denied. Please allow the Camera permission " +
-                                    "from the application''s settings.")
+                    builder.setMessage("The UPCme application is unavailable because it is dependent on the Camera permission you denied. " +
+                                    "Please grant the Camera permission from the application''s settings.")
                             .setTitle("Camera Permission Required")
                             .setCancelable(false)
                             .setNegativeButton("Close App", new DialogInterface.OnClickListener()
