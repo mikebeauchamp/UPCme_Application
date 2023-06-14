@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
      * 4 is for in-store marking of non-food items
      * 5 and 9 are for coupon use
      *
-     * @param barcode
-     * @return isScannableUpcABarcode
+     * @param barcode String
+     * @return Boolean isScannableUpcABarcode
      */
     private boolean isUpcABarcode (String barcode)
     {
