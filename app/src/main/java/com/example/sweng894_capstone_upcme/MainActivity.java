@@ -66,9 +66,18 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run()
                     {
-                        TextView textView = findViewById(R.id.tv_textview);
-                        //add UPC logic here
-                        textView.setText(result.getText());
+                        if (isUpcABarcode(result.getText())){
+                            TextView textView = findViewById(R.id.tv_textview);
+                            textView.setText(result.getText());
+
+                            //Add API Logic here
+                        }
+                        else
+                        {
+                            //Show Dialog that scanned barcode is not a UPC-A Code
+                            codeScanner.stopPreview();
+                            displayBarcodeErrorMessage(result.getText());
+                        }
                     }
                 });
             }
@@ -90,6 +99,83 @@ public class MainActivity extends AppCompatActivity {
                 codeScanner.startPreview();
             }
         });
+    }
+
+    /**
+     * This method searches the first digit of a scanned barcode. Typical UPC-A barcodes (which
+     * will be scanned by this application) begin with a first digit of 0, 1, 6, 7, or 8.
+     * Barcodes that have a first digit of 2, 3, 4, 5 or 9 will not be scanned by this application:
+     * 2 is for random weight items, e.g. meat, marked in-store
+     * 3 is for National Drug Code and National Health Related Items
+     * 4 is for in-store marking of non-food items
+     * 5 and 9 are for coupon use
+     *
+     * @param barcode
+     * @return isScannableUpcABarcode
+     */
+    private boolean isUpcABarcode (String barcode)
+    {
+        boolean isScannableUpcABarcode = false;
+
+        if ((barcode.charAt(0) == '0' || barcode.charAt(0) == '1' || barcode.charAt(0) == '6' ||
+                barcode.charAt(0) == '7' || barcode.charAt(0) == '8') && barcode.length() == 12)
+        {
+            isScannableUpcABarcode = true;
+        }
+
+        return isScannableUpcABarcode;
+    }
+
+    private void displayBarcodeErrorMessage(String barcode)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        if (barcode.length() == 12)
+        {
+            if (barcode.charAt(0) == '2')
+            {
+                builder.setMessage("The scanned barcode cannot be processed in this application. " +
+                        "UPC codes that begin with the number 2 denote random weight items, " +
+                        "e.g. meat, marked in-store.");
+            }
+            if (barcode.charAt(0) == '3')
+            {
+                builder.setMessage("The scanned barcode cannot be processed in this application. " +
+                        "UPC codes that begin with the number 3 denote National Drug Code and " +
+                        "National Health related items.");
+            }
+            if (barcode.charAt(0) == '4')
+            {
+                builder.setMessage("The scanned barcode cannot be processed in this application. " +
+                        "UPC codes that begin with the number 4 denote in-store marking of " +
+                        "non-food items.");
+            }
+            if (barcode.charAt(0) == '5' || barcode.charAt(0) == '9')
+            {
+                builder.setMessage("The scanned barcode cannot be processed in this application. " +
+                        "UPC codes that begin with the number 9 are are for coupon use.");
+            }
+        }
+        else
+        {
+            builder.setMessage("The scanned barcode is not UPC-A barcode.");
+        }
+
+        builder.setTitle("Barcode Scanning Error")
+                .setCancelable(false)
+                .setNegativeButton("OK", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                        codeScanner.startPreview();
+                    }
+                });
+
+        builder.create().show();
+
+        return;
     }
 
     @Override
@@ -144,10 +230,7 @@ public class MainActivity extends AppCompatActivity {
                                     dialog.dismiss();
                                     finish();
                                     finishAffinity();
-                                    System.exit(0);
-
-//                                    android.os.Process.killProcess(android.os.Process.myPid());
-//                                    System.exit(1);
+                                    System.exit(0);//
                                 }
                             })
                             .setPositiveButton("Settings", new DialogInterface.OnClickListener()
