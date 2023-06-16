@@ -6,4 +6,6 @@
     <string name="rationale_title">Required Camera Permission</string>
     <string name="rationale_desc">Camera permissions must be granted in order for the UPCme application to
         function properly. The camera is what is used by the application to scan barcodes.</string>
+    <string name="rapid_api_Key">eaccf7003emsh27d287bc068b48fp1c61f4jsn559e69f85fdc</string>
+    <string name="barcode_rapid_api_hostname">barcodes1.p.rapidapi.com</string>
 </resources>

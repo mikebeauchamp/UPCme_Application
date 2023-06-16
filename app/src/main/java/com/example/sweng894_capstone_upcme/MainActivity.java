@@ -25,14 +25,27 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ErrorCallback;
 import com.budiyev.android.codescanner.ScanMode;
+import com.example.sweng894_capstone_upcme.Model.Product;
+import com.example.sweng894_capstone_upcme.Model.ProductList;
 import com.google.zxing.Result;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity
+{
 
     private static final int REQUEST_CAMERA_CODE = 201;
     private static final String REQUEST_CAMERA_PERMISSION = Manifest.permission.CAMERA;
     private CodeScanner codeScanner;
+
+    public static final String BASE_URL = "https://api.barcodelookup.com/";
+
+    BarcodeAPIInterface apiInterface;
+
+    //private BarcodeAPIModel barcodeAPIModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -66,11 +79,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run()
                     {
-                        if (isUpcABarcode(result.getText())){
+                        if (isUpcABarcode(result.getText()))
+                        {
                             TextView textView = findViewById(R.id.tv_textview);
                             textView.setText(result.getText());
 
-                            //Add API Logic here
+                            callBarcodeAPI(result.getText());
                         }
                         else
                         {
@@ -100,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     /**
      * This method searches the first digit of a scanned barcode. Typical UPC-A barcodes (which
@@ -256,5 +272,43 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+
+
+    private void callBarcodeAPI(String barcode)
+    {
+        codeScanner.stopPreview();
+        apiInterface = BarcodeAPIClient.getClient().create(BarcodeAPIInterface.class);
+
+        String formatString = "y";
+        String apiKey =  "fv0a60gml7xsttbqvkvywi3q1v2wi6";
+        /**
+         GET List Users
+         **/
+        Call<ProductList> call2 = apiInterface.doGetProductList(barcode, formatString, apiKey);
+        call2.enqueue(new Callback<ProductList>()
+        {
+            @Override
+            public void onResponse(Call<ProductList> call, Response<ProductList> response)
+            {
+                //System.out.println("TESTING" + call.request().url());
+                ProductList productList = response.body();
+                System.out.println(productList.getProducts().get(0).getTitle());
+
+                TextView pttextView = findViewById(R.id.tv_ProductTitleTextView);
+                pttextView.setText(productList.getProducts().get(0).getTitle());
+
+                TextView pdtextView = findViewById(R.id.tv_ProductDescriptionTextView);
+                pdtextView.setText(productList.getProducts().get(0).getDescription());
+
+            }
+
+            @Override
+            public void onFailure(Call<ProductList> call, Throwable t) {
+                call.cancel();
+            }
+        });
+
     }
 }

@@ -42,7 +42,13 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.2.0-alpha01'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.0-alpha01'
     implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
-
     androidTestImplementation 'androidx.test:rules:1.4.1-alpha05'
     debugImplementation 'androidx.tracing:tracing:1.1.0'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+
+
 }
