@@ -23,8 +23,6 @@ public class BarcodeAPIClient
                 .client(client)
                 .build();
 
-        System.out.println("RETROFIT:" + retrofit.toString());
-
         return retrofit;
     }
 }

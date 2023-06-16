@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -284,11 +285,31 @@ public class MainActivity extends AppCompatActivity
         apiInterface = BarcodeAPIClient.getClient().create(BarcodeAPIInterface.class);
 
         String formatString = "y";
-        String text =  "fv0a60gml7xsttbqvkvywi3q1v2wi6";
+
+        ApplicationInfo applicationInfo = null;
+
+        String key = "";
+
+        try
+        {
+            applicationInfo = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
+            key = applicationInfo.metaData.getString("BarcodeKey");
+            System.out.println(key);
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+
+
+
+
+
         /**
          GET List Users
          **/
-        Call<ProductList> call2 = apiInterface.doGetProductList(barcode, formatString, text);
+        Call<ProductList> call2 = apiInterface.doGetProductList(barcode, formatString, key);
         call2.enqueue(new Callback<ProductList>()
         {
             @Override
@@ -296,20 +317,6 @@ public class MainActivity extends AppCompatActivity
             {
                 //System.out.println("TESTING" + call.request().url());
                 ProductList productList = response.body();
-                System.out.println(productList.getProducts().get(0).getTitle());
-
-                TextView pttextView = findViewById(R.id.tv_ProductTitleTextView);
-                pttextView.setText(productList.getProducts().get(0).getTitle());
-
-                //System.out.println(productList.getProducts().get(0).getImages().get(0));
-
-
-                ImageView imageView = (ImageView) findViewById(R.id.ProductImageView);
-                Picasso.get().load(productList.getProducts().get(0).getImages().get(0)).resize(400,400).into(imageView);
-
-                TextView pdtextView = findViewById(R.id.tv_ProductDescriptionTextView);
-                pdtextView.setText(productList.getProducts().get(0).getDescription());
-
             }
 
             @Override
