@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.budiyev.android.codescanner.ScanMode;
 import com.example.sweng894_capstone_upcme.Model.Product;
 import com.example.sweng894_capstone_upcme.Model.ProductList;
 import com.google.zxing.Result;
+import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -282,11 +284,11 @@ public class MainActivity extends AppCompatActivity
         apiInterface = BarcodeAPIClient.getClient().create(BarcodeAPIInterface.class);
 
         String formatString = "y";
-        String apiKey =  "fv0a60gml7xsttbqvkvywi3q1v2wi6";
+        String text =  "fv0a60gml7xsttbqvkvywi3q1v2wi6";
         /**
          GET List Users
          **/
-        Call<ProductList> call2 = apiInterface.doGetProductList(barcode, formatString, apiKey);
+        Call<ProductList> call2 = apiInterface.doGetProductList(barcode, formatString, text);
         call2.enqueue(new Callback<ProductList>()
         {
             @Override
@@ -298,6 +300,12 @@ public class MainActivity extends AppCompatActivity
 
                 TextView pttextView = findViewById(R.id.tv_ProductTitleTextView);
                 pttextView.setText(productList.getProducts().get(0).getTitle());
+
+                //System.out.println(productList.getProducts().get(0).getImages().get(0));
+
+
+                ImageView imageView = (ImageView) findViewById(R.id.ProductImageView);
+                Picasso.get().load(productList.getProducts().get(0).getImages().get(0)).resize(400,400).into(imageView);
 
                 TextView pdtextView = findViewById(R.id.tv_ProductDescriptionTextView);
                 pdtextView.setText(productList.getProducts().get(0).getDescription());
