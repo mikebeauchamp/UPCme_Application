@@ -321,6 +321,7 @@ public class MainActivity extends AppCompatActivity
 
                 TextView pdtextView = findViewById(R.id.tv_ProductDescriptionTextView);
                 pdtextView.setText(productList.getProducts().get(0).getDescription());
+
             }
 
             @Override

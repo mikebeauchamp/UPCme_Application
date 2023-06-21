@@ -41,10 +41,19 @@
             <TextView
                 android:id="@+id/tv_ProductTitleTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
                 android:gravity="center"
                 android:text="PRODUCT TITLE PLACEHOLDER"
                 android:textColor="@android:color/black" />
+
+            <ImageView
+                android:id="@+id/ProductImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_below="@+id/tv_ProductDescriptionTextView" />
 
             <TextView
                 android:id="@+id/tv_ProductDescriptionTextView"
@@ -52,15 +61,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="PRODUCT DESCRIPTION PLACEHOLDER"
-                android:layout_below="@+id/tv_ProductTitleTextView"
+                android:layout_below="@+id/ProductImageView"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:textColor="@android:color/black" />
-
-            <ImageView
-                android:id="@+id/ProductImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_ProductDescriptionTextView"
-                android:layout_centerInParent="true"/>
 
             <TextView
                 android:id="@+id/tv_AmazonRatingTextView"
