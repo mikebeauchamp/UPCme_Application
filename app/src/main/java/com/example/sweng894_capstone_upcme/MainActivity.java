@@ -27,7 +27,6 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ErrorCallback;
 import com.budiyev.android.codescanner.ScanMode;
-import com.example.sweng894_capstone_upcme.Model.Product;
 import com.example.sweng894_capstone_upcme.Model.ProductList;
 import com.google.zxing.Result;
 import com.squareup.picasso.Picasso;
@@ -43,12 +42,7 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_CAMERA_CODE = 201;
     private static final String REQUEST_CAMERA_PERMISSION = Manifest.permission.CAMERA;
     private CodeScanner codeScanner;
-
-    public static final String BASE_URL = "https://api.barcodelookup.com/";
-
     BarcodeAPIInterface apiInterface;
-
-    //private BarcodeAPIModel barcodeAPIModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -58,6 +52,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         CodeScanner();
     }
+
 
     private void CodeScanner()
     {
@@ -84,7 +79,7 @@ public class MainActivity extends AppCompatActivity
                     {
                         if (isUpcABarcode(result.getText()))
                         {
-                            TextView textView = findViewById(R.id.tv_textview);
+                            TextView textView = findViewById(R.id.tv_BarcodeTextView);
                             textView.setText(result.getText());
 
                             callBarcodeAPI(result.getText());
@@ -113,11 +108,11 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
+                keepScanning(view);
                 codeScanner.startPreview();
             }
         });
     }
-
 
 
     /**
@@ -294,7 +289,6 @@ public class MainActivity extends AppCompatActivity
         {
             applicationInfo = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
             key = applicationInfo.metaData.getString("BarcodeKey");
-            System.out.println(key);
         }
         catch (PackageManager.NameNotFoundException e)
         {
@@ -312,23 +306,77 @@ public class MainActivity extends AppCompatActivity
 
                 //System.out.println(productList.getProducts().get(0).getTitle());
 
-                TextView pttextView = findViewById(R.id.tv_ProductTitleTextView);
-                pttextView.setText(productList.getProducts().get(0).getTitle());
+                TextView ptTextView = findViewById(R.id.tv_ProductTitleTextView);
+                ptTextView.setText(productList.getProducts().get(0).getTitle());
 
                 //System.out.println(productList.getProducts().get(0).getImages().get(0));
                 ImageView imageView = (ImageView) findViewById(R.id.ProductImageView);
                 Picasso.get().load(productList.getProducts().get(0).getImages().get(0)).resize(400,400).into(imageView);
 
-                TextView pdtextView = findViewById(R.id.tv_ProductDescriptionTextView);
-                pdtextView.setText(productList.getProducts().get(0).getDescription());
+                TextView pdTextView = findViewById(R.id.tv_ProductDescriptionTextView);
+                pdTextView.setText(productList.getProducts().get(0).getDescription());
 
             }
 
             @Override
-            public void onFailure(Call<ProductList> call, Throwable t) {
+            public void onFailure(Call<ProductList> call, Throwable t)
+            {
                 call.cancel();
+                displayBarcodeAPICallErrorMessage();
             }
         });
+    }
+
+    public void displayBarcodeAPICallErrorMessage()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Please check your wi-fi/internet connection in order to retrieve product data.")
+                .setTitle("Internet Required")
+                .setCancelable(false)
+                .setNegativeButton("OK", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.create().show();
+    }
+
+    private void clearUI()
+    {
+        TextView ptTextView = findViewById(R.id.tv_ProductTitleTextView);
+        ptTextView.setText("");
+
+        TextView pdTextView = findViewById(R.id.tv_ProductDescriptionTextView);
+        pdTextView.setText("");
+
+        TextView bcTextView = findViewById(R.id.tv_BarcodeTextView);
+        bcTextView.setText("");
+
+        ImageView imageView = (ImageView) findViewById(R.id.ProductImageView);
+        imageView.setImageDrawable(null);
+
+        TextView arTextView = findViewById(R.id.tv_AmazonRatingTextView);
+        arTextView.setText("");
+
+        TextView apTextView = findViewById(R.id.tv_AmazonPriceTextView);
+        apTextView.setText("");
+
+        TextView apfTextView = findViewById(R.id.tv_AmazonPrimeFlagTextView);
+        apfTextView.setText("");
+
+        TextView arwTextView = findViewById(R.id.tv_AmazonReviewTextView);
+        arwTextView.setText("");
 
     }
+
+    public void keepScanning(View view)
+    {
+        clearUI();
+        codeScanner.startPreview();
+    }
+
 }

@@ -17,21 +17,37 @@
         app:flashButtonVisible="true"
         app:maskColor="#6C000000"/>
 
-    <TextView
-        android:id="@+id/tv_textview"
+    <Button
+        android:id="@+id/btn_KeepScanningButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/scanner_view"
+        android:layout_centerInParent="true"
+        android:backgroundTint="#000000"
+        android:text="KEEP SCANNING"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp"
+        android:padding="15dp"
+        android:textStyle="bold"
+        android:layout_below="@+id/scanner_view"
+        android:onClick="keepScanning"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_BarcodeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_KeepScanningButton"
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
         android:text="Scan something..."
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black"
+        />
 
     <ScrollView
         android:id="@+id/sv_productdataview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tv_textview">
+        android:layout_below="@+id/tv_BarcodeTextView">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_below="@+id/tv_ProductDescriptionTextView" />
+                android:layout_below="@+id/tv_ProductTitleTextView" />
 
             <TextView
                 android:id="@+id/tv_ProductDescriptionTextView"
@@ -72,34 +88,34 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="AMAZON RATING PLACEHOLDER"
-                android:layout_below="@+id/ProductImageView"
+                android:layout_below="@+id/tv_ProductDescriptionTextView"
                 android:textColor="@android:color/black" />
 
             <TextView
-                android:id="@+id/tv_amazonReviewTextView"
+                android:id="@+id/tv_AmazonReviewTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="AMAZON REVIEW PLACEHOLDER"
-                android:layout_below="@+id/tv_amazonRatingTextView"
+                android:layout_below="@+id/tv_AmazonRatingTextView"
                 android:textColor="@android:color/black" />
 
             <TextView
-                android:id="@+id/tv_amazonPricetTextView"
+                android:id="@+id/tv_AmazonPriceTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="AMAZON PRICE PLACEHOLDER"
-                android:layout_below="@+id/tv_amazonReviewTextView"
+                android:layout_below="@+id/tv_AmazonReviewTextView"
                 android:textColor="@android:color/black" />
 
             <TextView
-                android:id="@+id/tv_amazonPrimeFlagTextView"
+                android:id="@+id/tv_AmazonPrimeFlagTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="AMAZON PRIME PLACEHOLDER"
-                android:layout_below="@+id/tv_amazonPriceTextView"
+                android:layout_below="@+id/tv_AmazonPriceTextView"
                 android:textColor="@android:color/black" />
 
             <ListView
@@ -107,7 +123,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:layout_below="@+id/tv_amazonPrimeFlagTextView"/>
+                android:layout_below="@+id/tv_AmazonPrimeFlagTextView"/>
 
 
         </LinearLayout>
