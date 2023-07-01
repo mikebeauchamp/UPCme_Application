@@ -12,15 +12,11 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -38,12 +34,9 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -96,6 +89,8 @@ public class MainActivity extends AppCompatActivity
                             TextView textView = findViewById(R.id.tv_BarcodeTextView);
                             textView.setText(result.getText());
 
+                            String test = result.getText();
+
                             callBarcodeAPI(result.getText());
                         }
                         else
@@ -143,6 +138,7 @@ public class MainActivity extends AppCompatActivity
     private boolean isUpcABarcode (String barcode)
     {
         boolean isScannableUpcABarcode = false;
+        int test = barcode.length();
 
         if ((barcode.charAt(0) == '0' || barcode.charAt(0) == '1' || barcode.charAt(0) == '6' ||
                 barcode.charAt(0) == '7' || barcode.charAt(0) == '8') && barcode.length() == 12)
@@ -180,7 +176,7 @@ public class MainActivity extends AppCompatActivity
             if (barcode.charAt(0) == '5' || barcode.charAt(0) == '9')
             {
                 builder.setMessage("The scanned barcode cannot be processed in this application. " +
-                        "UPC codes that begin with the number 9 are are for coupon use.");
+                        "UPC codes that begin with the number 5 or 9 are are for coupon use.");
             }
         }
         else
@@ -340,9 +336,6 @@ public class MainActivity extends AppCompatActivity
 
                         for (OnlineStore onlineStore : productList.getProducts().get(0).getStores())
                         {
-                            String name = onlineStore.getName().toString();
-                            String country = onlineStore.getCountry().toString();
-
                             //Only add online stores that are from the US and have a Last Update date that is greater than a year from today
                             if ((onlineStore.getCountry().equals("US")) && (!TextUtils.isEmpty(onlineStore.getLastUpdate())))
                             {
@@ -355,7 +348,7 @@ public class MainActivity extends AppCompatActivity
                                     c.add(Calendar.YEAR, -1);
                                     yearAgoFromToday = c.getTime();
 
-                                    lastUpdatedDate = formatter.parse(onlineStore.getLastUpdate().toString());
+                                    lastUpdatedDate = formatter.parse(onlineStore.getLastUpdate());
 
                                     if (lastUpdatedDate.after(yearAgoFromToday))
                                     {
