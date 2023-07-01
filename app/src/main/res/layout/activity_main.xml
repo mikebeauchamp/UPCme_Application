@@ -46,7 +46,7 @@
     <ScrollView
         android:id="@+id/sv_productdataview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/tv_BarcodeTextView">
 
         <LinearLayout
@@ -118,16 +118,29 @@
                 android:layout_below="@+id/tv_AmazonPriceTextView"
                 android:textColor="@android:color/black" />
 
-            <ListView
-                android:id="@+id/lv_OtherOnlineSellerListview"
+            <TextView
+                android:id="@+id/tv_OtherOnlineRetailers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="5dp"
+                android:gravity="left"
+                android:text="Other Online Retailers"
+                android:layout_below="@+id/tv_AmazonPrimeFlagTextView"
+                android:textColor="@android:color/black"
+                android:visibility="gone"/>
+
+            <com.example.sweng894_capstone_upcme.NonScrollListView
+                android:id="@+id/lv_OtherOnlineRetailersListView"
+                android:nestedScrollingEnabled="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_below="@+id/tv_AmazonPrimeFlagTextView"/>
-
-
+                android:layout_below="@+id/tv_OtherOnlineRetailers"
+                android:divider="@color/material_blue_grey_800"
+                android:dividerHeight="1dp"
+                android:footerDividersEnabled="false" />
         </LinearLayout>
-    </ScrollView>
-
+    </ScrollView >
 
 </RelativeLayout>

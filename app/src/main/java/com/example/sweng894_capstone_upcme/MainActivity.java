@@ -9,9 +9,12 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,9 +30,20 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ErrorCallback;
 import com.budiyev.android.codescanner.ScanMode;
+import com.example.sweng894_capstone_upcme.Model.OnlineStore;
 import com.example.sweng894_capstone_upcme.Model.ProductList;
 import com.google.zxing.Result;
 import com.squareup.picasso.Picasso;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -109,7 +123,6 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 keepScanning(view);
-                codeScanner.startPreview();
             }
         });
     }
@@ -196,6 +209,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume()
     {
         super.onResume();
+        clearUI();
         codeScanner.startPreview();
     }
 
@@ -274,7 +288,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-    private void callBarcodeAPI(String barcode)
+    public void callBarcodeAPI(String barcode)
     {
         codeScanner.stopPreview();
         apiInterface = BarcodeAPIClient.getClient().create(BarcodeAPIInterface.class);
@@ -301,20 +315,76 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(Call<ProductList> call, Response<ProductList> response)
             {
-                //System.out.println("TESTING" + call.request().url());
-                ProductList productList = response.body();
+                if (response.isSuccessful()){
+                    //System.out.println("TESTING" + call.request().url());
+                    ProductList productList = response.body();
 
-                //System.out.println(productList.getProducts().get(0).getTitle());
+                    //System.out.println(productList.getProducts().get(0).getTitle());
 
-                TextView ptTextView = findViewById(R.id.tv_ProductTitleTextView);
-                ptTextView.setText(productList.getProducts().get(0).getTitle());
+                    TextView ptTextView = findViewById(R.id.tv_ProductTitleTextView);
+                    ptTextView.setText(productList.getProducts().get(0).getTitle());
 
-                //System.out.println(productList.getProducts().get(0).getImages().get(0));
-                ImageView imageView = (ImageView) findViewById(R.id.ProductImageView);
-                Picasso.get().load(productList.getProducts().get(0).getImages().get(0)).resize(400,400).into(imageView);
+                    //System.out.println(productList.getProducts().get(0).getImages().get(0));
+                    ImageView imageView = (ImageView) findViewById(R.id.ProductImageView);
+                    Picasso.get().load(productList.getProducts().get(0).getImages().get(0)).resize(400,400).into(imageView);
 
-                TextView pdTextView = findViewById(R.id.tv_ProductDescriptionTextView);
-                pdTextView.setText(productList.getProducts().get(0).getDescription());
+                    TextView pdTextView = findViewById(R.id.tv_ProductDescriptionTextView);
+                    pdTextView.setText(productList.getProducts().get(0).getDescription());
+
+                    if (productList.getProducts().get(0).getStores().size() > 0)
+                    {
+                        NonScrollListView listView = (NonScrollListView) findViewById(R.id.lv_OtherOnlineRetailersListView);
+                        TextView olretTextView = findViewById(R.id.tv_OtherOnlineRetailers);
+
+                        ArrayList<OnlineStore> onlineStoreList = new ArrayList<OnlineStore>();
+
+                        for (OnlineStore onlineStore : productList.getProducts().get(0).getStores())
+                        {
+                            String name = onlineStore.getName().toString();
+                            String country = onlineStore.getCountry().toString();
+
+                            //Only add online stores that are from the US and have a Last Update date that is greater than a year from today
+                            if ((onlineStore.getCountry().equals("US")) && (!TextUtils.isEmpty(onlineStore.getLastUpdate())))
+                            {
+                                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                Date lastUpdatedDate;
+                                Date yearAgoFromToday;
+                                try
+                                {
+                                    Calendar c = Calendar.getInstance();
+                                    c.add(Calendar.YEAR, -1);
+                                    yearAgoFromToday = c.getTime();
+
+                                    lastUpdatedDate = formatter.parse(onlineStore.getLastUpdate().toString());
+
+                                    if (lastUpdatedDate.after(yearAgoFromToday))
+                                    {
+                                        onlineStoreList.add(onlineStore);
+                                    }
+
+                                }
+                                catch (ParseException e)
+                                {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        }
+
+                        if (onlineStoreList.size() > 0)
+                        {
+                            CustomBarcodeAPIListViewAdapter customAdapter = new CustomBarcodeAPIListViewAdapter(getApplicationContext(), onlineStoreList);
+
+                            listView.setAdapter(customAdapter);
+                            olretTextView.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                }
+                else
+                {
+                    displayResponseFailedErrorMessage();
+                }
+
 
             }
 
@@ -322,12 +392,12 @@ public class MainActivity extends AppCompatActivity
             public void onFailure(Call<ProductList> call, Throwable t)
             {
                 call.cancel();
-                displayBarcodeAPICallErrorMessage();
+                displayCheckInternetConnectionErrorMessage();
             }
         });
     }
 
-    public void displayBarcodeAPICallErrorMessage()
+    public void displayCheckInternetConnectionErrorMessage()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Please check your wi-fi/internet connection in order to retrieve product data.")
@@ -343,6 +413,32 @@ public class MainActivity extends AppCompatActivity
                 });
 
         builder.create().show();
+    }
+
+    public void displayResponseFailedErrorMessage()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Barcode not found.")
+                .setTitle("Barcode Scanning Error")
+                .setCancelable(false)
+                .setNegativeButton("OK", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                        clearUI();
+                        codeScanner.startPreview();
+                    }
+                });
+
+        builder.create().show();
+    }
+
+    public void keepScanning(View view)
+    {
+        clearUI();
+        codeScanner.startPreview();
     }
 
     private void clearUI()
@@ -371,12 +467,10 @@ public class MainActivity extends AppCompatActivity
         TextView arwTextView = findViewById(R.id.tv_AmazonReviewTextView);
         arwTextView.setText("");
 
-    }
+        TextView olretTextView = findViewById(R.id.tv_OtherOnlineRetailers);
+        olretTextView.setVisibility(View.GONE);
 
-    public void keepScanning(View view)
-    {
-        clearUI();
-        codeScanner.startPreview();
+        NonScrollListView listView = (NonScrollListView) findViewById(R.id.lv_OtherOnlineRetailersListView);
+        listView.setAdapter(null);
     }
-
 }
