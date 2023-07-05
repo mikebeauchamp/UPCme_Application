@@ -5,8 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-
-public class BarcodeAPIClient
+public class RainforestAPIClient
 {
     private static Retrofit retrofit = null;
 
@@ -18,7 +17,7 @@ public class BarcodeAPIClient
 
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.barcodelookup.com/")
+                .baseUrl("https://api.rainforestapi.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();

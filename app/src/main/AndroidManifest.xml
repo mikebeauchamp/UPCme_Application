@@ -37,7 +37,14 @@
         </activity>
         <meta-data
             android:name = "BarcodeKey"
-            android:value = "${barcodeAPI}"/>
+            android:value = "${barcodeAPI}"
+
+            />
+        <meta-data
+            android:name = "RainforestKey"
+            android:value = "${rainforestAPI}"
+
+            />
     </application>
 
 </manifest>

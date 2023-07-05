@@ -1,4 +1,4 @@
-package com.example.sweng894_capstone_upcme.Model;
+package com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel;
 
 import java.util.List;
 

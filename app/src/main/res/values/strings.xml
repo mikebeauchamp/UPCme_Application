@@ -1,8 +1,4 @@
 <resources>
     <string name="app_name">SWENG894_CAPSTONE_UPCme</string>
-    <string name="action_settings">Settings</string>
 
-    <string name="rationale_title">Required Camera Permission</string>
-    <string name="rationale_desc">Camera permissions must be granted in order for the UPCme application to
-        function properly. The camera is what is used by the application to scan barcodes.</string>
 </resources>

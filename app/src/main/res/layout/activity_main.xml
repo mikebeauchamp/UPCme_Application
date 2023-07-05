@@ -44,7 +44,6 @@
         />
 
     <ScrollView
-        android:id="@+id/sv_productdataview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_BarcodeTextView">
@@ -69,7 +68,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_below="@+id/tv_ProductTitleTextView" />
+                android:layout_below="@+id/tv_ProductTitleTextView"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:id="@+id/tv_ProductDescriptionTextView"
@@ -86,6 +86,8 @@
                 android:id="@+id/tv_AmazonRatingTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:gravity="center"
                 android:text="AMAZON RATING PLACEHOLDER"
                 android:layout_below="@+id/tv_ProductDescriptionTextView"
@@ -96,6 +98,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:text="AMAZON REVIEW PLACEHOLDER"
                 android:layout_below="@+id/tv_AmazonRatingTextView"
                 android:textColor="@android:color/black" />
@@ -105,6 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginBottom="5dp"
                 android:text="AMAZON PRICE PLACEHOLDER"
                 android:layout_below="@+id/tv_AmazonReviewTextView"
                 android:textColor="@android:color/black" />
@@ -133,7 +139,6 @@
 
             <com.example.sweng894_capstone_upcme.NonScrollListView
                 android:id="@+id/lv_OtherOnlineRetailersListView"
-                android:nestedScrollingEnabled="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/tv_OtherOnlineRetailers"

@@ -26,8 +26,9 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ErrorCallback;
 import com.budiyev.android.codescanner.ScanMode;
-import com.example.sweng894_capstone_upcme.Model.OnlineStore;
-import com.example.sweng894_capstone_upcme.Model.ProductList;
+import com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel.OnlineStore;
+import com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel.ProductList;
+import com.example.sweng894_capstone_upcme.RainforestAPIModel.RainforestAPI;
 import com.google.zxing.Result;
 import com.squareup.picasso.Picasso;
 
@@ -49,7 +50,9 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_CAMERA_CODE = 201;
     private static final String REQUEST_CAMERA_PERMISSION = Manifest.permission.CAMERA;
     private CodeScanner codeScanner;
-    BarcodeAPIInterface apiInterface;
+    BarcodeLookupAPIInterface barcodeLookupAPIInterface;
+    RainforestAPIInterface rainforestAPIInterface;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -88,10 +91,10 @@ public class MainActivity extends AppCompatActivity
                         {
                             TextView textView = findViewById(R.id.tv_BarcodeTextView);
                             textView.setText(result.getText());
+                            codeScanner.stopPreview();
+                            callRainforestAPI(result.getText());
+                            callBarcodeLookupAPI(result.getText());
 
-                            String test = result.getText();
-
-                            callBarcodeAPI(result.getText());
                         }
                         else
                         {
@@ -138,7 +141,6 @@ public class MainActivity extends AppCompatActivity
     private boolean isUpcABarcode (String barcode)
     {
         boolean isScannableUpcABarcode = false;
-        int test = barcode.length();
 
         if ((barcode.charAt(0) == '0' || barcode.charAt(0) == '1' || barcode.charAt(0) == '6' ||
                 barcode.charAt(0) == '7' || barcode.charAt(0) == '8') && barcode.length() == 12)
@@ -284,10 +286,10 @@ public class MainActivity extends AppCompatActivity
 
 
 
-    public void callBarcodeAPI(String barcode)
+    public void callBarcodeLookupAPI(String barcode)
     {
-        codeScanner.stopPreview();
-        apiInterface = BarcodeAPIClient.getClient().create(BarcodeAPIInterface.class);
+
+        barcodeLookupAPIInterface = BarcodeLookupAPIClient.getClient().create(BarcodeLookupAPIInterface.class);
 
         String formatString = "y";
 
@@ -305,7 +307,7 @@ public class MainActivity extends AppCompatActivity
             throw new RuntimeException(e);
         }
 
-        Call<ProductList> call2 = apiInterface.doGetProductList(barcode, formatString, key);
+        Call<ProductList> call2 = barcodeLookupAPIInterface.doGetProductList(barcode, formatString, key);
         call2.enqueue(new Callback<ProductList>()
         {
             @Override
@@ -354,7 +356,6 @@ public class MainActivity extends AppCompatActivity
                                     {
                                         onlineStoreList.add(onlineStore);
                                     }
-
                                 }
                                 catch (ParseException e)
                                 {
@@ -371,14 +372,11 @@ public class MainActivity extends AppCompatActivity
                             olretTextView.setVisibility(View.VISIBLE);
                         }
                     }
-
                 }
                 else
                 {
                     displayResponseFailedErrorMessage();
                 }
-
-
             }
 
             @Override
@@ -386,6 +384,71 @@ public class MainActivity extends AppCompatActivity
             {
                 call.cancel();
                 displayCheckInternetConnectionErrorMessage();
+            }
+        });
+    }
+
+    public void callRainforestAPI(String barcode)
+    {
+        rainforestAPIInterface = RainforestAPIClient.getClient().create(RainforestAPIInterface.class);
+
+        String type = "product";
+        String amazonDomain = "amazon.com";
+        String currency = "usd";
+        String skip_gtin_cache = "false";
+        String output = "json";
+
+        ApplicationInfo applicationInfo = null;
+
+        String key = "";
+
+        try
+        {
+            applicationInfo = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
+            key = applicationInfo.metaData.getString("RainforestKey");
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        Call<RainforestAPI> call2 = rainforestAPIInterface.getRainforestProduct(key, type, amazonDomain, currency, skip_gtin_cache, output, barcode );
+        call2.enqueue(new Callback<RainforestAPI>()
+        {
+            @Override
+            public void onResponse(Call<RainforestAPI> call, Response<RainforestAPI> response)
+            {
+                if (response.isSuccessful()){
+                    //System.out.println("TESTING" + call.request().url());
+                    RainforestAPI rainforestAPI = response.body();
+
+                    //The overall rating of the product, out of 5.
+                    TextView arTextView = findViewById(R.id.tv_AmazonRatingTextView);
+                    arTextView.setText("Rating: " + String.valueOf(rainforestAPI.getRainforestProduct().getRating()) + " out of 5.");
+
+                    TextView apTextView = findViewById(R.id.tv_AmazonPriceTextView);
+                    apTextView.setText("");
+
+                    TextView apfTextView = findViewById(R.id.tv_AmazonPrimeFlagTextView);
+                    if (rainforestAPI.getRainforestProduct().getBuyboxWinner().isIsPrime()){
+                        apfTextView.setText("Sold on Prime");
+                    }
+
+                    TextView arwTextView = findViewById(R.id.tv_AmazonReviewTextView);
+                    arwTextView.setText(rainforestAPI.getRainforestProduct().getTopReviews().get(0).getBody());
+
+                }
+                else
+                {
+                    displayResponseFailedErrorMessage();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RainforestAPI> call, Throwable t)
+            {
+                call.cancel();
+                //displayCheckInternetConnectionErrorMessage();
             }
         });
     }
