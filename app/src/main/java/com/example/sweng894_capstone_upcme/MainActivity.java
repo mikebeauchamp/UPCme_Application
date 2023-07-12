@@ -89,10 +89,8 @@ public class MainActivity extends AppCompatActivity
                     {
                         if (isUpcABarcode(result.getText()))
                         {
-                            TextView textView = findViewById(R.id.tv_BarcodeTextView);
-                            textView.setText(result.getText());
                             codeScanner.stopPreview();
-                            callRainforestAPI(result.getText());
+                            //callRainforestAPI(result.getText());
                             callBarcodeLookupAPI(result.getText());
 
                         }
@@ -138,7 +136,7 @@ public class MainActivity extends AppCompatActivity
      * @param barcode String
      * @return Boolean isScannableUpcABarcode
      */
-    private boolean isUpcABarcode (String barcode)
+    public boolean isUpcABarcode (String barcode)
     {
         boolean isScannableUpcABarcode = false;
 
@@ -151,7 +149,7 @@ public class MainActivity extends AppCompatActivity
         return isScannableUpcABarcode;
     }
 
-    private void displayBarcodeErrorMessage(String barcode)
+    public void displayBarcodeErrorMessage(String barcode)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -319,15 +317,28 @@ public class MainActivity extends AppCompatActivity
 
                     //System.out.println(productList.getProducts().get(0).getTitle());
 
-                    TextView ptTextView = findViewById(R.id.tv_ProductTitleTextView);
-                    ptTextView.setText(productList.getProducts().get(0).getTitle());
+                    if (!TextUtils.isEmpty(productList.getProducts().get(0).getTitle()))
+                    {
+                        TextView ptTextView = findViewById(R.id.tv_ProductTitleTextView);
+                        ptTextView.setText(productList.getProducts().get(0).getTitle());
+                        ptTextView.setVisibility(View.VISIBLE);
+                    }
 
-                    //System.out.println(productList.getProducts().get(0).getImages().get(0));
-                    ImageView imageView = (ImageView) findViewById(R.id.ProductImageView);
-                    Picasso.get().load(productList.getProducts().get(0).getImages().get(0)).resize(400,400).into(imageView);
+                    if (!TextUtils.isEmpty(productList.getProducts().get(0).getImages().get(0)))
+                    {
+                        ImageView imageView = (ImageView) findViewById(R.id.ProductImageView);
+                        Picasso.get().load(productList.getProducts().get(0).getImages().get(0)).resize(400,400).into(imageView);
+                        imageView.setVisibility(View.VISIBLE);
+                    }
 
-                    TextView pdTextView = findViewById(R.id.tv_ProductDescriptionTextView);
-                    pdTextView.setText(productList.getProducts().get(0).getDescription());
+                    if (!TextUtils.isEmpty(productList.getProducts().get(0).getDescription()))
+                    {
+                        TextView pdTextView = findViewById(R.id.tv_ProductDescriptionTextView);
+                        pdTextView.setText(productList.getProducts().get(0).getDescription());
+                        pdTextView.setVisibility(View.VISIBLE);
+                    }
+
+
 
                     if (productList.getProducts().get(0).getStores().size() > 0)
                     {
@@ -505,9 +516,6 @@ public class MainActivity extends AppCompatActivity
         TextView pdTextView = findViewById(R.id.tv_ProductDescriptionTextView);
         pdTextView.setText("");
 
-        TextView bcTextView = findViewById(R.id.tv_BarcodeTextView);
-        bcTextView.setText("");
-
         ImageView imageView = (ImageView) findViewById(R.id.ProductImageView);
         imageView.setImageDrawable(null);
 
@@ -524,7 +532,7 @@ public class MainActivity extends AppCompatActivity
         arwTextView.setText("");
 
         TextView olretTextView = findViewById(R.id.tv_OtherOnlineRetailers);
-        olretTextView.setVisibility(View.GONE);
+        olretTextView.setVisibility(View.INVISIBLE);
 
         NonScrollListView listView = (NonScrollListView) findViewById(R.id.lv_OtherOnlineRetailersListView);
         listView.setAdapter(null);
