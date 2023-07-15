@@ -24,10 +24,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SWENG894_CAPSTONE_UPCme"
         tools:targetApi="31">
+<!--        Run the application in portrait orientation mode-->
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:exported="true"
-
             android:theme="@style/Theme.SWENG894_CAPSTONE_UPCme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,6 +47,12 @@
             android:value = "${rainforestAPI}"
 
             />
+        <meta-data
+            android:name = "RapidKey"
+            android:value = "${rapidAPI}"
+
+            />
+
     </application>
 
 </manifest>

@@ -26,6 +26,7 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ErrorCallback;
 import com.budiyev.android.codescanner.ScanMode;
+import com.example.sweng894_capstone_upcme.AmazonPriceRapidAPIModel.Asin;
 import com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel.OnlineStore;
 import com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel.ProductList;
 import com.example.sweng894_capstone_upcme.RainforestAPIModel.RainforestAPI;
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity
     private CodeScanner codeScanner;
     BarcodeLookupAPIInterface barcodeLookupAPIInterface;
     RainforestAPIInterface rainforestAPIInterface;
+
+    AmazonPriceUPCToASINInterface amazonPriceRapidAPIInterface;
 
 
     @Override
@@ -91,7 +94,8 @@ public class MainActivity extends AppCompatActivity
                         {
                             codeScanner.stopPreview();
                             //callRainforestAPI(result.getText());
-                            callBarcodeLookupAPI(result.getText());
+                            //callBarcodeLookupAPI(result.getText());
+                            callAmazonPriceRapidAPI(result.getText());
 
                         }
                         else
@@ -251,6 +255,7 @@ public class MainActivity extends AppCompatActivity
                                 @Override
                                 public void onClick(DialogInterface dialog, int which)
                                 {
+                                    codeScanner.releaseResources();
                                     dialog.dismiss();
                                     finish();
                                     finishAffinity();
@@ -399,6 +404,50 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    public void callAmazonPriceRapidAPI(String barcode)
+    {
+
+        amazonPriceRapidAPIInterface = AmazonPriceRapidAPIClient.getClient().create(AmazonPriceUPCToASINInterface.class);
+
+        String host = "amazon-price1.p.rapidapi.com";
+
+        String marketplace = "US";
+
+        ApplicationInfo applicationInfo = null;
+        String key = "";
+
+        try
+        {
+            applicationInfo = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
+            key = applicationInfo.metaData.getString("RapidKey");
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        Call<Asin> call2 = amazonPriceRapidAPIInterface.getAsin(host, key, barcode, marketplace);
+        call2.enqueue(new Callback<Asin>()
+        {
+            @Override
+            public void onResponse(Call<Asin> call, Response<Asin> response)
+            {
+                if (response.isSuccessful()) {
+                    System.out.println("TESTING" + call.request().url());
+                    System.out.println(response.body());
+                    Asin asin = response.body();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Asin> call, Throwable t)
+            {
+                call.cancel();
+
+            }
+        });
+    }
+
     public void callRainforestAPI(String barcode)
     {
         rainforestAPIInterface = RainforestAPIClient.getClient().create(RainforestAPIInterface.class);
@@ -449,17 +498,12 @@ public class MainActivity extends AppCompatActivity
                     arwTextView.setText(rainforestAPI.getRainforestProduct().getTopReviews().get(0).getBody());
 
                 }
-                else
-                {
-                    displayResponseFailedErrorMessage();
-                }
             }
 
             @Override
             public void onFailure(Call<RainforestAPI> call, Throwable t)
             {
                 call.cancel();
-                //displayCheckInternetConnectionErrorMessage();
             }
         });
     }

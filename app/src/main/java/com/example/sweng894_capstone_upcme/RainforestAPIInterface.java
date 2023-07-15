@@ -9,8 +9,8 @@ import retrofit2.http.Query;
 public interface RainforestAPIInterface
 {
     @GET("request")
-    Call <RainforestAPI> getRainforestProduct(@Query("api_key") String apikey,
-                                              @Query("type") String type,
+    Call <RainforestAPI> getRainforestProduct(@Query("upc") String apikey,
+                                              @Query("marketplace") String type,
                                               @Query("amazon_domain") String amazonDomain,
                                               @Query("currency") String currency,
                                               @Query("skip_gtin_cache") String skip_gtin_cache,
