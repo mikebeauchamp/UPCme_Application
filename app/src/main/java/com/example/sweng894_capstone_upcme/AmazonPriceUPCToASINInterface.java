@@ -15,6 +15,5 @@ public interface AmazonPriceUPCToASINInterface
                          @Header("X-RapidAPI-Key") String key,
                          @Query("upc") String upc,
                          @Query("marketplace") String marketplace
-
-                                 );
+    );
 }

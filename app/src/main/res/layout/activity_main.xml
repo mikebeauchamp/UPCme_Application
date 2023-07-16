@@ -34,7 +34,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center"
-                android:text="PRODUCT TITLE PLACEHOLDER"
                 android:textColor="@android:color/black"
                 android:visibility="gone" />
 
@@ -43,8 +42,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_below="@+id/tv_ProductTitleTextView"
-                android:contentDescription="TODO"
                 android:visibility="gone" />
 
             <TextView
@@ -52,12 +49,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="PRODUCT DESCRIPTION PLACEHOLDER"
-                android:layout_below="@+id/ProductImageView"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:textColor="@android:color/black"
                 android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_AmazonURLTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:textColor="@android:color/black"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tv_AmazonRatingTextView"
@@ -66,9 +71,17 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:gravity="center"
-                android:text="AMAZON RATING PLACEHOLDER"
-                android:layout_below="@+id/tv_ProductDescriptionTextView"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tv_AmazonPriceTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="5dp"
+                android:textColor="@android:color/black"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tv_AmazonReviewTextView"
@@ -78,28 +91,16 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:text="AMAZON REVIEW PLACEHOLDER"
-                android:layout_below="@+id/tv_AmazonRatingTextView"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/tv_AmazonPriceTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginBottom="5dp"
-                android:text="AMAZON PRICE PLACEHOLDER"
-                android:layout_below="@+id/tv_AmazonReviewTextView"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tv_AmazonPrimeFlagTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="AMAZON PRIME PLACEHOLDER"
-                android:layout_below="@+id/tv_AmazonPriceTextView"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tv_OtherOnlineRetailers"

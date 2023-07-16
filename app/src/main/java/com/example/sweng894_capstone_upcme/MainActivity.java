@@ -1,5 +1,7 @@
 package com.example.sweng894_capstone_upcme;
 
+import static java.lang.Boolean.parseBoolean;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,7 +11,9 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,6 +30,7 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ErrorCallback;
 import com.budiyev.android.codescanner.ScanMode;
+import com.example.sweng894_capstone_upcme.AmazonPriceRapidAPIModel.AmazonPriceResult;
 import com.example.sweng894_capstone_upcme.AmazonPriceRapidAPIModel.Asin;
 import com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel.OnlineStore;
 import com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel.ProductList;
@@ -39,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,7 +60,8 @@ public class MainActivity extends AppCompatActivity
     BarcodeLookupAPIInterface barcodeLookupAPIInterface;
     RainforestAPIInterface rainforestAPIInterface;
 
-    AmazonPriceUPCToASINInterface amazonPriceRapidAPIInterface;
+    AmazonPriceUPCToASINInterface amazonPriceUPCToASINInterface;
+    AmazonPriceSearchInterface amazonPriceSearchInterface;
 
 
     @Override
@@ -93,8 +100,7 @@ public class MainActivity extends AppCompatActivity
                         if (isUpcABarcode(result.getText()))
                         {
                             codeScanner.stopPreview();
-                            //callRainforestAPI(result.getText());
-                            //callBarcodeLookupAPI(result.getText());
+                            callBarcodeLookupAPI(result.getText());
                             callAmazonPriceRapidAPI(result.getText());
 
                         }
@@ -298,20 +304,20 @@ public class MainActivity extends AppCompatActivity
 
         ApplicationInfo applicationInfo = null;
 
-        String key = "";
+        String call1Key = "";
 
         try
         {
             applicationInfo = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
-            key = applicationInfo.metaData.getString("BarcodeKey");
+            call1Key = applicationInfo.metaData.getString("BarcodeKey");
         }
         catch (PackageManager.NameNotFoundException e)
         {
             throw new RuntimeException(e);
         }
 
-        Call<ProductList> call2 = barcodeLookupAPIInterface.doGetProductList(barcode, formatString, key);
-        call2.enqueue(new Callback<ProductList>()
+        Call<ProductList> call1 = barcodeLookupAPIInterface.doGetProductList(barcode, formatString, call1Key);
+        call1.enqueue(new Callback<ProductList>()
         {
             @Override
             public void onResponse(Call<ProductList> call, Response<ProductList> response)
@@ -342,8 +348,6 @@ public class MainActivity extends AppCompatActivity
                         pdTextView.setText(productList.getProducts().get(0).getDescription());
                         pdTextView.setVisibility(View.VISIBLE);
                     }
-
-
 
                     if (productList.getProducts().get(0).getStores().size() > 0)
                     {
@@ -407,35 +411,38 @@ public class MainActivity extends AppCompatActivity
     public void callAmazonPriceRapidAPI(String barcode)
     {
 
-        amazonPriceRapidAPIInterface = AmazonPriceRapidAPIClient.getClient().create(AmazonPriceUPCToASINInterface.class);
+        amazonPriceUPCToASINInterface = AmazonPriceRapidAPIClient.getClient().create(AmazonPriceUPCToASINInterface.class);
 
         String host = "amazon-price1.p.rapidapi.com";
 
         String marketplace = "US";
 
         ApplicationInfo applicationInfo = null;
-        String key = "";
+        String rapidKey = "";
 
         try
         {
             applicationInfo = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
-            key = applicationInfo.metaData.getString("RapidKey");
+            rapidKey = applicationInfo.metaData.getString("RapidKey");
         }
         catch (PackageManager.NameNotFoundException e)
         {
             throw new RuntimeException(e);
         }
 
-        Call<Asin> call2 = amazonPriceRapidAPIInterface.getAsin(host, key, barcode, marketplace);
+        Call<Asin> call2 = amazonPriceUPCToASINInterface.getAsin(host, rapidKey, barcode, marketplace);
         call2.enqueue(new Callback<Asin>()
         {
             @Override
             public void onResponse(Call<Asin> call, Response<Asin> response)
             {
-                if (response.isSuccessful()) {
-                    System.out.println("TESTING" + call.request().url());
-                    System.out.println(response.body());
+                if (response.isSuccessful())
+                {
+                    //System.out.println("TESTING" + call.request().url());
+                    //System.out.println(response.body());
                     Asin asin = response.body();
+
+                    callAmazonPriceSearchRapidAPI(asin.getAsin());
                 }
             }
 
@@ -443,7 +450,85 @@ public class MainActivity extends AppCompatActivity
             public void onFailure(Call<Asin> call, Throwable t)
             {
                 call.cancel();
+            }
+        });
+    }
 
+    public void callAmazonPriceSearchRapidAPI(String asin)
+    {
+        amazonPriceSearchInterface = AmazonPriceRapidAPIClient.getClient().create(AmazonPriceSearchInterface.class);
+
+        String host = "amazon-price1.p.rapidapi.com";
+
+        String marketplace = "US";
+
+        ApplicationInfo applicationInfo = null;
+        String rapidKey = "";
+
+        try
+        {
+            applicationInfo = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
+            rapidKey = applicationInfo.metaData.getString("RapidKey");
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+
+
+        Call<List<AmazonPriceResult>> call2 = amazonPriceSearchInterface.getAmazonPriceResult(host, rapidKey, asin, marketplace);
+        call2.enqueue(new Callback<List<AmazonPriceResult>>()
+        {
+            @Override
+            public void onResponse(Call<List<AmazonPriceResult>> call, Response<List<AmazonPriceResult>> response)
+            {
+                if (response.isSuccessful())
+                {
+                    //System.out.println("TESTING: " + call.request().url());
+                    //System.out.println(response.body());
+                    List<AmazonPriceResult> amazonPriceResult = response.body();
+
+                    if (!TextUtils.isEmpty(amazonPriceResult.get(0).getRating()))
+                    {
+                        //The overall rating of the product, out of 5.
+                        TextView arTextView = findViewById(R.id.tv_AmazonRatingTextView);
+                        arTextView.setText("Amazon Rating: " + amazonPriceResult.get(0).getRating() + " out of 5 overall for " + amazonPriceResult.get(0).getTotalReviews() + " total reviews.");
+                        arTextView.setVisibility(View.VISIBLE);
+                    }
+
+                    if (!TextUtils.isEmpty(amazonPriceResult.get(0).getDetailPageURL()))
+                    {
+                        TextView urlTextView = findViewById(R.id.tv_AmazonURLTextView);
+                        //String url = Html.fromHtml("<a href=\"" + amazonPriceResult.get(0).getDetailPageURL() + "\" target=\"_blank\">Amazon Product Page</a>"));
+                        urlTextView.setText(Html.fromHtml("<a href=\"" + amazonPriceResult.get(0).getDetailPageURL() + "\" target=\"_blank\">Amazon Product Page</a>"));
+                        urlTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                        urlTextView.setVisibility(View.VISIBLE);
+                    }
+
+                    if (!TextUtils.isEmpty(amazonPriceResult.get(0).getPrice()))
+                    {
+                        TextView apTextView = findViewById(R.id.tv_AmazonPriceTextView);
+                        apTextView.setText("Amazon Price: " + amazonPriceResult.get(0).getPrice());
+                        apTextView.setVisibility(View.VISIBLE);
+                    }
+
+                    if (!TextUtils.isEmpty(amazonPriceResult.get(0).getIsPrimeEligible())) {
+                        TextView apfTextView = findViewById(R.id.tv_AmazonPrimeFlagTextView);
+                        if (amazonPriceResult.get(0).getIsPrimeEligible().equals("1"))
+                        {
+                            apfTextView.setText("This product is sold via Amazon Prime.");
+                            apfTextView.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AmazonPriceResult>> call, Throwable t)
+            {
+                call.cancel();
             }
         });
     }
@@ -562,6 +647,9 @@ public class MainActivity extends AppCompatActivity
 
         ImageView imageView = (ImageView) findViewById(R.id.ProductImageView);
         imageView.setImageDrawable(null);
+
+        TextView urlTextView = findViewById(R.id.tv_AmazonURLTextView);
+        urlTextView.setText("");
 
         TextView arTextView = findViewById(R.id.tv_AmazonRatingTextView);
         arTextView.setText("");
