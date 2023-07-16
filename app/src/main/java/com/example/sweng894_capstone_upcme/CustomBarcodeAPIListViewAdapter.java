@@ -15,7 +15,11 @@ import androidx.annotation.Nullable;
 
 import com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel.OnlineStore;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CustomBarcodeAPIListViewAdapter extends ArrayAdapter<OnlineStore>
 {
@@ -64,7 +68,19 @@ public class CustomBarcodeAPIListViewAdapter extends ArrayAdapter<OnlineStore>
         }
 
         TextView lastUpdateTextView = currentItemView.findViewById(R.id.tv_LastUpdateTextView);
-        lastUpdateTextView.setText(currentNumberPosition.getLastUpdate());
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try
+        {
+            Date lastUpdatedDateInput = formatter.parse(currentNumberPosition.getLastUpdate());
+            DateFormat outputFormatter = new SimpleDateFormat("M/d/yy");
+
+            String lastUpdatedDateOutput = outputFormatter.format(lastUpdatedDateInput); // Output : 01/20/2012
+            lastUpdateTextView.setText("Last Updated: " + lastUpdatedDateOutput);
+        }
+        catch (ParseException e)
+        {
+            throw new RuntimeException(e);
+        }
 
         return currentItemView;
     }
