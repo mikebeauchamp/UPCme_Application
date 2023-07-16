@@ -489,14 +489,6 @@ public class MainActivity extends AppCompatActivity
                     //System.out.println(response.body());
                     List<AmazonPriceResult> amazonPriceResult = response.body();
 
-                    if (!TextUtils.isEmpty(amazonPriceResult.get(0).getRating()))
-                    {
-                        //The overall rating of the product, out of 5.
-                        TextView arTextView = findViewById(R.id.tv_AmazonRatingTextView);
-                        arTextView.setText("Amazon Rating: " + amazonPriceResult.get(0).getRating() + " out of 5 overall for " + amazonPriceResult.get(0).getTotalReviews() + " total reviews.");
-                        arTextView.setVisibility(View.VISIBLE);
-                    }
-
                     if (!TextUtils.isEmpty(amazonPriceResult.get(0).getDetailPageURL()))
                     {
                         TextView urlTextView = findViewById(R.id.tv_AmazonURLTextView);
@@ -505,23 +497,6 @@ public class MainActivity extends AppCompatActivity
                         urlTextView.setMovementMethod(LinkMovementMethod.getInstance());
                         urlTextView.setVisibility(View.VISIBLE);
                     }
-
-                    if (!TextUtils.isEmpty(amazonPriceResult.get(0).getPrice()))
-                    {
-                        TextView apTextView = findViewById(R.id.tv_AmazonPriceTextView);
-                        apTextView.setText("Amazon Price: " + amazonPriceResult.get(0).getPrice());
-                        apTextView.setVisibility(View.VISIBLE);
-                    }
-
-                    if (!TextUtils.isEmpty(amazonPriceResult.get(0).getIsPrimeEligible())) {
-                        TextView apfTextView = findViewById(R.id.tv_AmazonPrimeFlagTextView);
-                        if (amazonPriceResult.get(0).getIsPrimeEligible().equals("1"))
-                        {
-                            apfTextView.setText("This product is sold via Amazon Prime.");
-                            apfTextView.setVisibility(View.VISIBLE);
-                        }
-                    }
-
                 }
             }
 
