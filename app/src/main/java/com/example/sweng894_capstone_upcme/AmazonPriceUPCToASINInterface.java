@@ -9,7 +9,6 @@ import retrofit2.http.Query;
 
 public interface AmazonPriceUPCToASINInterface
 {
-
     @GET("upcToAsin")
     Call <Asin> getAsin(@Header("X-RapidAPI-Host") String host,
                          @Header("X-RapidAPI-Key") String key,
