@@ -1,11 +1,9 @@
 package com.example.sweng894_capstone_upcme;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.Matchers.allOf;
 
@@ -19,10 +17,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.GrantPermissionRule;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.Rule;
@@ -41,24 +35,30 @@ public class UT23
     public GrantPermissionRule mGrantPermissionRule =
             GrantPermissionRule.grant(
                     "android.permission.CAMERA");
-    @Before
-    public void setUp() throws Exception {
-        mActivityScenarioRule.getScenario().onActivity(activity -> {
 
+    @Test
+    public void ut23()
+    {
+        mActivityScenarioRule.getScenario().onActivity(activity ->
+        {
             activity.runOnUiThread(new Runnable()
             {
                 @Override
                 public void run()
                 {
-                    activity.callAmazonPriceRapidAPI("079100520008");
+                    //Mimic application functionality when a 12 digit barcode is scanned
+                    if (activity.isUpcABarcode("079100520008"))
+                    {
+                        activity.callAmazonPriceRapidAPI("079100520008");
+                    }
+                    else
+                    {
+
+                    }
                 }
             });
         });
-    }
 
-    @Test
-    public void ut23()
-    {
         SystemClock.sleep(5000);
 
         ViewInteraction amazonURLTextView = onView(

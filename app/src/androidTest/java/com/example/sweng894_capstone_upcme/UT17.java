@@ -30,25 +30,31 @@ public class UT17
     public GrantPermissionRule mGrantPermissionRule =
             GrantPermissionRule.grant(
                     "android.permission.CAMERA");
-    @Before
-    public void setUp() throws Exception {
-        mActivityScenarioRule.getScenario().onActivity(activity -> {
 
+    @Test
+    public void ut17()
+    {
+        mActivityScenarioRule.getScenario().onActivity(activity ->
+        {
             activity.runOnUiThread(new Runnable()
             {
                 @Override
                 public void run()
                 {
-                    activity.callBarcodeLookupAPI("079100520008");
+                    //Mimic application functionality when a 12 digit barcode is scanned
+                    if (activity.isUpcABarcode("079100520008"))
+                    {
+                        activity.callBarcodeLookupAPI("079100520008");
+                    }
+                    else
+                    {
+
+                    }
                 }
             });
         });
-    }
 
-    @Test
-    public void ut17()
-    {
-        SystemClock.sleep(1000);
+        SystemClock.sleep(2000);
         onView(withId(R.id.tv_ProductDescriptionTextView)).check(matches(isDisplayed()));
     }
 }

@@ -3,13 +3,13 @@ package com.example.sweng894_capstone_upcme;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
-import android.os.SystemClock;
 import android.view.View;
 
 import androidx.test.espresso.ViewInteraction;
@@ -29,42 +29,42 @@ import org.junit.runner.RunWith;
 public class UT9 {
 
     @Rule
-    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
-            new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> rule = new ActivityScenarioRule<>(MainActivity.class);
+
 
     @Rule
     public GrantPermissionRule mGrantPermissionRule =
             GrantPermissionRule.grant(
                     "android.permission.CAMERA");
 
-    @Before
-    public void setUp() throws Exception {
-        mActivityScenarioRule.getScenario().onActivity(activity -> {
-
+    @Test
+    public void ut9() throws InterruptedException {
+        rule.getScenario().onActivity(activity ->
+        {
             activity.runOnUiThread(new Runnable()
             {
                 @Override
                 public void run()
                 {
-                    activity.displayBarcodeErrorMessage("370408746313");
+                    //Mimic application functionality when a 12 digit barcode is scanned with a first digit that begins with a 3
+                    if (activity.isUpcABarcode("370408746313"))
+                    {
+
+                    }
+                    else
+                    {
+                        activity.displayBarcodeErrorMessage("370408746313");
+                    }
                 }
             });
         });
-    }
 
-    @Test
-    public void ut9() {
-
-        SystemClock.sleep(5000);
+        Thread.sleep(1000);
 
         ViewInteraction textView = onView(
-                allOf(withId(android.R.id.message), withText("The scanned barcode cannot be processed in this application. " +
-                                        "UPC codes that begin with the number 3 denote National Drug Code and " +
-                                "National Health related items."),
+                allOf(withId(android.R.id.message), withText("The scanned barcode cannot be processed in this application. UPC codes that begin with the number 3 denote National Drug Code and National Health related items."),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
-        textView.check(matches(withText("The scanned barcode cannot be processed in this application. " +
-                "UPC codes that begin with the number 3 denote National Drug Code and " +
-                "National Health related items.")));
-    }
+        textView.inRoot(isDialog()).check(matches(isDisplayed()));
+   }
 }

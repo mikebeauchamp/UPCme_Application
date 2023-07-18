@@ -410,7 +410,6 @@ public class MainActivity extends AppCompatActivity
 
     public void callAmazonPriceRapidAPI(String barcode)
     {
-
         amazonPriceUPCToASINInterface = AmazonPriceRapidAPIClient.getClient().create(AmazonPriceUPCToASINInterface.class);
 
         String host = "amazon-price1.p.rapidapi.com";
@@ -505,65 +504,65 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void callRainforestAPI(String barcode)
-    {
-        rainforestAPIInterface = RainforestAPIClient.getClient().create(RainforestAPIInterface.class);
-
-        String type = "product";
-        String amazonDomain = "amazon.com";
-        String currency = "usd";
-        String skip_gtin_cache = "false";
-        String output = "json";
-
-        ApplicationInfo applicationInfo = null;
-
-        String key = "";
-
-        try
-        {
-            applicationInfo = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
-            key = applicationInfo.metaData.getString("RainforestKey");
-        }
-        catch (PackageManager.NameNotFoundException e)
-        {
-            throw new RuntimeException(e);
-        }
-
-        Call<RainforestAPI> call2 = rainforestAPIInterface.getRainforestProduct(key, type, amazonDomain, currency, skip_gtin_cache, output, barcode );
-        call2.enqueue(new Callback<RainforestAPI>()
-        {
-            @Override
-            public void onResponse(Call<RainforestAPI> call, Response<RainforestAPI> response)
-            {
-                if (response.isSuccessful()){
-                    //System.out.println("TESTING" + call.request().url());
-                    RainforestAPI rainforestAPI = response.body();
-
-                    //The overall rating of the product, out of 5.
-                    TextView arTextView = findViewById(R.id.tv_AmazonRatingTextView);
-                    arTextView.setText("Rating: " + String.valueOf(rainforestAPI.getRainforestProduct().getRating()) + " out of 5.");
-
-                    TextView apTextView = findViewById(R.id.tv_AmazonPriceTextView);
-                    apTextView.setText("");
-
-                    TextView apfTextView = findViewById(R.id.tv_AmazonPrimeFlagTextView);
-                    if (rainforestAPI.getRainforestProduct().getBuyboxWinner().isIsPrime()){
-                        apfTextView.setText("Sold on Prime");
-                    }
-
-                    TextView arwTextView = findViewById(R.id.tv_AmazonReviewTextView);
-                    arwTextView.setText(rainforestAPI.getRainforestProduct().getTopReviews().get(0).getBody());
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RainforestAPI> call, Throwable t)
-            {
-                call.cancel();
-            }
-        });
-    }
+//    public void callRainforestAPI(String barcode)
+//    {
+//        rainforestAPIInterface = RainforestAPIClient.getClient().create(RainforestAPIInterface.class);
+//
+//        String type = "product";
+//        String amazonDomain = "amazon.com";
+//        String currency = "usd";
+//        String skip_gtin_cache = "false";
+//        String output = "json";
+//
+//        ApplicationInfo applicationInfo = null;
+//
+//        String key = "";
+//
+//        try
+//        {
+//            applicationInfo = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
+//            key = applicationInfo.metaData.getString("RainforestKey");
+//        }
+//        catch (PackageManager.NameNotFoundException e)
+//        {
+//            throw new RuntimeException(e);
+//        }
+//
+//        Call<RainforestAPI> call2 = rainforestAPIInterface.getRainforestProduct(key, type, amazonDomain, currency, skip_gtin_cache, output, barcode );
+//        call2.enqueue(new Callback<RainforestAPI>()
+//        {
+//            @Override
+//            public void onResponse(Call<RainforestAPI> call, Response<RainforestAPI> response)
+//            {
+//                if (response.isSuccessful()){
+//                    //System.out.println("TESTING" + call.request().url());
+//                    RainforestAPI rainforestAPI = response.body();
+//
+//                    //The overall rating of the product, out of 5.
+//                    TextView arTextView = findViewById(R.id.tv_AmazonRatingTextView);
+//                    arTextView.setText("Rating: " + String.valueOf(rainforestAPI.getRainforestProduct().getRating()) + " out of 5.");
+//
+//                    TextView apTextView = findViewById(R.id.tv_AmazonPriceTextView);
+//                    apTextView.setText("");
+//
+//                    TextView apfTextView = findViewById(R.id.tv_AmazonPrimeFlagTextView);
+//                    if (rainforestAPI.getRainforestProduct().getBuyboxWinner().isIsPrime()){
+//                        apfTextView.setText("Sold on Prime");
+//                    }
+//
+//                    TextView arwTextView = findViewById(R.id.tv_AmazonReviewTextView);
+//                    arwTextView.setText(rainforestAPI.getRainforestProduct().getTopReviews().get(0).getBody());
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<RainforestAPI> call, Throwable t)
+//            {
+//                call.cancel();
+//            }
+//        });
+//    }
 
     public void displayCheckInternetConnectionErrorMessage()
     {

@@ -6,8 +6,6 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
-import android.os.SystemClock;
-
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -48,9 +46,30 @@ public class UT15 {
     }
 
     @Test
-    public void ut15()
+    public void ut15() throws InterruptedException
     {
-        SystemClock.sleep(1000);
+        mActivityScenarioRule.getScenario().onActivity(activity ->
+        {
+            activity.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    //Mimic application functionality when a 12 digit barcode is scanned
+                    if (activity.isUpcABarcode("079100520008"))
+                    {
+                        activity.callBarcodeLookupAPI("079100520008");
+                    }
+                    else
+                    {
+
+                    }
+                }
+            });
+        });
+
+        Thread.sleep(2000);
+
         onView(withId(R.id.ProductImageView)).check(matches(isDisplayed()));
     }
 }

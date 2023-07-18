@@ -3,6 +3,7 @@ package com.example.sweng894_capstone_upcme;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
@@ -37,8 +38,8 @@ public class UT7 {
             GrantPermissionRule.grant(
                     "android.permission.CAMERA");
 
-    @Before
-    public void setUp() throws Exception {
+    @Test
+    public void ut7() throws InterruptedException {
         mActivityScenarioRule.getScenario().onActivity(activity -> {
 
             activity.runOnUiThread(new Runnable()
@@ -46,21 +47,25 @@ public class UT7 {
                 @Override
                 public void run()
                 {
-                    activity.displayBarcodeErrorMessage("987654321098");
+                    //Mimic application functionality when a 13 digit barcode is scanned
+                    if (activity.isUpcABarcode("9876543210987"))
+                    {
+
+                    }
+                    else
+                    {
+                        activity.displayBarcodeErrorMessage("9876543210987");
+                    }
                 }
             });
         });
-    }
 
-    @Test
-    public void ut7() {
-
-        SystemClock.sleep(5000);
+        Thread.sleep(1000);
 
         ViewInteraction textView = onView(
                 allOf(withId(android.R.id.message), withText("The scanned barcode is not UPC-A barcode."),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
-        textView.check(matches(withText("The scanned barcode is not UPC-A barcode.")));
+        textView.inRoot(isDialog()).check(matches(isDisplayed()));
     }
 }

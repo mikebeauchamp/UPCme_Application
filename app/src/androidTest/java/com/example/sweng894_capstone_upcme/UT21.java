@@ -1,14 +1,11 @@
 package com.example.sweng894_capstone_upcme;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
-import android.os.SystemClock;
 import android.view.View;
 
-import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -20,7 +17,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,20 +33,6 @@ public class UT21
     public GrantPermissionRule mGrantPermissionRule =
             GrantPermissionRule.grant(
                     "android.permission.CAMERA");
-    @Before
-    public void setUp() throws Exception {
-        mActivityScenarioRule.getScenario().onActivity(activity -> {
-
-            activity.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    activity.callBarcodeLookupAPI("079100520008");
-                }
-            });
-        });
-    }
 
     private static Matcher<View> getElementFromMatchAtPosition(final Matcher<View> matcher, final int position) {
         return new BaseMatcher<View>()
@@ -77,11 +59,31 @@ public class UT21
     }
 
     @Test
-    public void ut21()
+    public void ut21() throws InterruptedException
     {
-        SystemClock.sleep(1000);
+        mActivityScenarioRule.getScenario().onActivity(activity ->
+        {
+            activity.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    //Mimic application functionality when a 12 digit barcode is scanned
+                    if (activity.isUpcABarcode("079100520008"))
+                    {
+                        activity.callBarcodeLookupAPI("079100520008");
+                    }
+                    else
+                    {
+
+                    }
+                }
+            });
+        });
+
+        Thread.sleep(2000);
         onView(withId(R.id.scroll_view)).perform(ViewActions.swipeUp());
-        SystemClock.sleep(1000);
+        Thread.sleep(2000);
 
         ViewInteraction nameTextView = onView(
                 Matchers.allOf(
