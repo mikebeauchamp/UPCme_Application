@@ -1,7 +1,5 @@
 package com.example.sweng894_capstone_upcme;
 
-import static java.lang.Boolean.parseBoolean;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -32,9 +30,9 @@ import com.budiyev.android.codescanner.ErrorCallback;
 import com.budiyev.android.codescanner.ScanMode;
 import com.example.sweng894_capstone_upcme.AmazonPriceRapidAPIModel.AmazonPriceResult;
 import com.example.sweng894_capstone_upcme.AmazonPriceRapidAPIModel.Asin;
+import com.example.sweng894_capstone_upcme.AmazonRealTimeRapidAPIModel.RealTimeRapidAPIResult;
 import com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel.OnlineStore;
 import com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel.ProductList;
-import com.example.sweng894_capstone_upcme.RainforestAPIModel.RainforestAPI;
 import com.google.zxing.Result;
 import com.squareup.picasso.Picasso;
 
@@ -58,10 +56,10 @@ public class MainActivity extends AppCompatActivity
     private static final String REQUEST_CAMERA_PERMISSION = Manifest.permission.CAMERA;
     private CodeScanner codeScanner;
     BarcodeLookupAPIInterface barcodeLookupAPIInterface;
-    RainforestAPIInterface rainforestAPIInterface;
-
     AmazonPriceUPCToASINInterface amazonPriceUPCToASINInterface;
     AmazonPriceSearchInterface amazonPriceSearchInterface;
+
+    AmazonRealTimeRapidAPIInterface amazonRealTimeRapidAPIInterface;
 
 
     @Override
@@ -442,6 +440,7 @@ public class MainActivity extends AppCompatActivity
                     Asin asin = response.body();
 
                     callAmazonPriceSearchRapidAPI(asin.getAsin());
+                    callAmazonRealTimeRapidAPI(asin.getAsin());
                 }
             }
 
@@ -486,12 +485,37 @@ public class MainActivity extends AppCompatActivity
                 {
                     List<AmazonPriceResult> amazonPriceResult = response.body();
 
+                    if (!TextUtils.isEmpty(amazonPriceResult.get(0).getRating()))
+                    {
+                        //The overall rating of the product, out of 5.
+                        TextView arTextView = findViewById(R.id.tv_AmazonRatingTextView);
+                        arTextView.setText("Amazon Rating: " + amazonPriceResult.get(0).getRating() + " out of 5 overall for " + amazonPriceResult.get(0).getTotalReviews() + " total reviews.");
+                        arTextView.setVisibility(View.VISIBLE);
+                    }
+
                     if (!TextUtils.isEmpty(amazonPriceResult.get(0).getDetailPageURL()))
                     {
                         TextView urlTextView = findViewById(R.id.tv_AmazonURLTextView);
+                        //String url = Html.fromHtml("<a href=\"" + amazonPriceResult.get(0).getDetailPageURL() + "\" target=\"_blank\">Amazon Product Page</a>"));
                         urlTextView.setText(Html.fromHtml("<a href=\"" + amazonPriceResult.get(0).getDetailPageURL() + "\" target=\"_blank\">Amazon Product Page</a>"));
                         urlTextView.setMovementMethod(LinkMovementMethod.getInstance());
                         urlTextView.setVisibility(View.VISIBLE);
+                    }
+
+                    if (!TextUtils.isEmpty(amazonPriceResult.get(0).getPrice()))
+                    {
+                        TextView apTextView = findViewById(R.id.tv_AmazonPriceTextView);
+                        apTextView.setText("Amazon Price: " + amazonPriceResult.get(0).getPrice());
+                        apTextView.setVisibility(View.VISIBLE);
+                    }
+
+                    if (!TextUtils.isEmpty(amazonPriceResult.get(0).getIsPrimeEligible())) {
+                        TextView apfTextView = findViewById(R.id.tv_AmazonPrimeFlagTextView);
+                        if (amazonPriceResult.get(0).getIsPrimeEligible().equals("1"))
+                        {
+                            apfTextView.setText("This product is sold via Amazon Prime.");
+                            apfTextView.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
@@ -504,65 +528,61 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-//    public void callRainforestAPI(String barcode)
-//    {
-//        rainforestAPIInterface = RainforestAPIClient.getClient().create(RainforestAPIInterface.class);
-//
-//        String type = "product";
-//        String amazonDomain = "amazon.com";
-//        String currency = "usd";
-//        String skip_gtin_cache = "false";
-//        String output = "json";
-//
-//        ApplicationInfo applicationInfo = null;
-//
-//        String key = "";
-//
-//        try
-//        {
-//            applicationInfo = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
-//            key = applicationInfo.metaData.getString("RainforestKey");
-//        }
-//        catch (PackageManager.NameNotFoundException e)
-//        {
-//            throw new RuntimeException(e);
-//        }
-//
-//        Call<RainforestAPI> call2 = rainforestAPIInterface.getRainforestProduct(key, type, amazonDomain, currency, skip_gtin_cache, output, barcode );
-//        call2.enqueue(new Callback<RainforestAPI>()
-//        {
-//            @Override
-//            public void onResponse(Call<RainforestAPI> call, Response<RainforestAPI> response)
-//            {
-//                if (response.isSuccessful()){
-//                    //System.out.println("TESTING" + call.request().url());
-//                    RainforestAPI rainforestAPI = response.body();
-//
-//                    //The overall rating of the product, out of 5.
-//                    TextView arTextView = findViewById(R.id.tv_AmazonRatingTextView);
-//                    arTextView.setText("Rating: " + String.valueOf(rainforestAPI.getRainforestProduct().getRating()) + " out of 5.");
-//
-//                    TextView apTextView = findViewById(R.id.tv_AmazonPriceTextView);
-//                    apTextView.setText("");
-//
-//                    TextView apfTextView = findViewById(R.id.tv_AmazonPrimeFlagTextView);
-//                    if (rainforestAPI.getRainforestProduct().getBuyboxWinner().isIsPrime()){
-//                        apfTextView.setText("Sold on Prime");
-//                    }
-//
-//                    TextView arwTextView = findViewById(R.id.tv_AmazonReviewTextView);
-//                    arwTextView.setText(rainforestAPI.getRainforestProduct().getTopReviews().get(0).getBody());
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<RainforestAPI> call, Throwable t)
-//            {
-//                call.cancel();
-//            }
-//        });
-//    }
+    /**
+     *
+     * This method will return the top 3 Amazon reviews for a given ASIN
+     * @param asin
+     */
+    public void callAmazonRealTimeRapidAPI(String asin)
+    {
+        amazonRealTimeRapidAPIInterface = AmazonRealTimeRapidAPIClient.getClient().create(AmazonRealTimeRapidAPIInterface.class);
+
+        String host = "real-time-amazon-data.p.rapidapi.com";
+        String country = "US";
+        String sortBy = "TOP_REVIEWS";
+        String starRating = "ALL";
+        String verifiedPurchasesOnly = "true";
+        String imagesOrVideosOnly = "false";
+        String page = "1";
+        String pageSize = "3";
+
+        ApplicationInfo applicationInfo = null;
+        String rapidKey = "";
+
+        try
+        {
+            applicationInfo = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
+            rapidKey = applicationInfo.metaData.getString("RapidKey");
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+
+
+        Call<RealTimeRapidAPIResult> call2 = amazonRealTimeRapidAPIInterface.getProductReviews(host, rapidKey, asin, country, sortBy, starRating, verifiedPurchasesOnly,
+                imagesOrVideosOnly, page, pageSize);
+        call2.enqueue(new Callback<RealTimeRapidAPIResult>()
+        {
+            @Override
+            public void onResponse(Call<RealTimeRapidAPIResult> call, Response<RealTimeRapidAPIResult> response)
+            {
+                if (response.isSuccessful())
+                {
+                    RealTimeRapidAPIResult realTimeRapidAPIResult = response.body();
+
+                    System.out.println();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RealTimeRapidAPIResult> call, Throwable t)
+            {
+                call.cancel();
+            }
+        });
+    }
 
     public void displayCheckInternetConnectionErrorMessage()
     {
