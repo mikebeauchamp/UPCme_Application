@@ -56,6 +56,19 @@
                 android:visibility="gone" />
 
             <TextView
+                android:id="@+id/tv_AmazonLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="5dp"
+                android:gravity="left"
+                android:text="Amazon Product Information:"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
+            <TextView
                 android:id="@+id/tv_AmazonURLTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,22 +89,34 @@
                 android:visibility="gone"/>
 
             <TextView
+                android:id="@+id/tv_ReviewLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="5dp"
+                android:gravity="left"
+                android:text="Reviews:"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
+            <com.example.sweng894_capstone_upcme.NonScrollListView
+                android:id="@+id/lv_AmazonReviewsListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="5dp"
+                android:footerDividersEnabled="false"
+                android:visibility="gone"/>
+
+            <TextView
                 android:id="@+id/tv_AmazonPriceTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
-                android:textColor="@android:color/black"
-                android:visibility="gone"/>
-
-            <TextView
-                android:id="@+id/tv_AmazonReviewTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:textColor="@android:color/black"
                 android:visibility="gone"/>
 
@@ -107,13 +132,13 @@
                 android:id="@+id/tv_OtherOnlineRetailers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"
                 android:gravity="left"
-                android:text="Other Online Retailers"
-                android:layout_below="@+id/tv_AmazonPrimeFlagTextView"
+                android:text="Other Online Retailers:"
                 android:textColor="@android:color/black"
+                android:textStyle="bold"
                 android:visibility="gone"/>
 
             <com.example.sweng894_capstone_upcme.NonScrollListView
@@ -121,9 +146,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/tv_OtherOnlineRetailers"
-                android:divider="@color/material_blue_grey_800"
-                android:dividerHeight="1dp"
-                android:footerDividersEnabled="false" />
+                android:divider="@android:color/transparent"
+                android:dividerHeight="5dp"
+                android:footerDividersEnabled="false"
+                android:visibility="gone"/>
         </LinearLayout>
     </ScrollView >
 
