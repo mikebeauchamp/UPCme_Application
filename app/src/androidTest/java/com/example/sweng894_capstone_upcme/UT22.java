@@ -1,10 +1,10 @@
 package com.example.sweng894_capstone_upcme;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
+
 import static org.hamcrest.Matchers.allOf;
 
 import android.view.View;
@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class UT21
+public class UT22
 {
     @Rule
     public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
@@ -35,7 +35,7 @@ public class UT21
                     "android.permission.CAMERA");
 
     @Test
-    public void ut21() throws InterruptedException {
+    public void ut23() throws InterruptedException {
         mActivityScenarioRule.getScenario().onActivity(activity ->
         {
             activity.runOnUiThread(new Runnable()
@@ -63,6 +63,6 @@ public class UT21
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
 
-        amazonURLTextView.check(matches(isDisplayed()));
+        amazonURLTextView.perform(ViewActions.click());
     }
 }
