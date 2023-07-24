@@ -1,13 +1,23 @@
 package com.example.sweng894_capstone_upcme;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 import android.os.SystemClock;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
@@ -21,6 +31,7 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -110,6 +121,73 @@ public class UT19
                         getElementFromMatchAtPosition(Matchers.allOf(withId(R.id.tv_PriceTextView)), 0),
                         isDisplayed()));
         priceview.check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+
+        mActivityScenarioRule.getScenario().onActivity(activity ->
+        {
+            activity.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    //Mimic application functionality when a 12 digit barcode is scanned
+                    //that is not contained in the Barcode Lookup API
+                    if (activity.isUpcABarcode("044670012826"))
+                    {
+                        activity.callBarcodeLookupAPI("044670012826");
+                    }
+                    else
+                    {
+
+                    }
+                }
+            });
+        });
+
+        Thread.sleep(2000);
+
+        //Dialog will appear that barcode was not found. The below code will click the OK button
+        //Once the OK button is click all controls are reset - and visibility = GONE
+        //The test below is to confirm the online seller listview is not found after the OK button
+        //is clicked
+
+        ViewInteraction materialButton = onView(
+                allOf(withId(android.R.id.button2), withText("OK"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.ScrollView")),
+                                        0),
+                                2)));
+        materialButton.perform(scrollTo(), click());
+
+        Thread.sleep(2000);
+        onView(withId(R.id.scroll_view)).perform(ViewActions.swipeUp());
+        Thread.sleep(2000);
+
+        ViewInteraction priceTextView2 = onView(
+                Matchers.allOf(
+                        getElementFromMatchAtPosition(Matchers.allOf(withId(R.id.tv_PriceTextView)), 0),
+                        isDisplayed()));
+        priceTextView2.check(doesNotExist());
+        Thread.sleep(2000);
+    }
+
+    private static Matcher<View> childAtPosition(
+            final Matcher<View> parentMatcher, final int position) {
+
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Child at position " + position + " in parent ");
+                parentMatcher.describeTo(description);
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                ViewParent parent = view.getParent();
+                return parent instanceof ViewGroup && parentMatcher.matches(parent)
+                        && view.equals(((ViewGroup) parent).getChildAt(position));
+            }
+        };
     }
 
 

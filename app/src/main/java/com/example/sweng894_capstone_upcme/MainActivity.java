@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -31,6 +32,7 @@ import com.budiyev.android.codescanner.ScanMode;
 import com.example.sweng894_capstone_upcme.AmazonPriceRapidAPIModel.AmazonPriceResult;
 import com.example.sweng894_capstone_upcme.AmazonPriceRapidAPIModel.Asin;
 import com.example.sweng894_capstone_upcme.AmazonRealTimeRapidAPIModel.RealTimeRapidAPIResult;
+import com.example.sweng894_capstone_upcme.AmazonRealTimeRapidAPIModel.Review;
 import com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel.OnlineStore;
 import com.example.sweng894_capstone_upcme.BarcodeLookupAPIModel.ProductList;
 import com.google.zxing.Result;
@@ -388,6 +390,8 @@ public class MainActivity extends AppCompatActivity
 
                             listView.setAdapter(customAdapter);
                             olretTextView.setVisibility(View.VISIBLE);
+                            olretTextView.setPaintFlags(olretTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                            listView.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -485,6 +489,10 @@ public class MainActivity extends AppCompatActivity
                 {
                     List<AmazonPriceResult> amazonPriceResult = response.body();
 
+                    TextView amazonLabelTextView = findViewById(R.id.tv_AmazonLabel);
+                    amazonLabelTextView.setVisibility(View.VISIBLE);
+                    amazonLabelTextView.setPaintFlags(amazonLabelTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
                     if (!TextUtils.isEmpty(amazonPriceResult.get(0).getRating()))
                     {
                         //The overall rating of the product, out of 5.
@@ -559,8 +567,6 @@ public class MainActivity extends AppCompatActivity
             throw new RuntimeException(e);
         }
 
-
-
         Call<RealTimeRapidAPIResult> call2 = amazonRealTimeRapidAPIInterface.getProductReviews(host, rapidKey, asin, country, sortBy, starRating, verifiedPurchasesOnly,
                 imagesOrVideosOnly, page, pageSize);
         call2.enqueue(new Callback<RealTimeRapidAPIResult>()
@@ -572,7 +578,25 @@ public class MainActivity extends AppCompatActivity
                 {
                     RealTimeRapidAPIResult realTimeRapidAPIResult = response.body();
 
-                    System.out.println();
+                    if (realTimeRapidAPIResult.getData().getReviews().size() > 0)
+                    {
+                        NonScrollListView listView = (NonScrollListView) findViewById(R.id.lv_AmazonReviewsListView);
+                        TextView reviewLabelTextView = findViewById(R.id.tv_ReviewLabel);
+
+                        ArrayList<Review> reviewList = new ArrayList<Review>();
+
+                        for (Review review : realTimeRapidAPIResult.getData().getReviews()) {
+                            reviewList.add(review);
+                        }
+
+                        if (reviewList.size() > 0) {
+                            AmazonRealTimeListViewAdapter customAdapter = new AmazonRealTimeListViewAdapter(getApplicationContext(), reviewList);
+
+                            listView.setAdapter(customAdapter);
+                            listView.setVisibility(View.VISIBLE);
+                            reviewLabelTextView.setVisibility(View.VISIBLE);
+                        }
+                    }
                 }
             }
 
@@ -639,20 +663,26 @@ public class MainActivity extends AppCompatActivity
         ImageView imageView = (ImageView) findViewById(R.id.ProductImageView);
         imageView.setImageDrawable(null);
 
+        TextView amazonLabelTextView = findViewById(R.id.tv_AmazonLabel);
+        amazonLabelTextView.setVisibility(View.INVISIBLE);
+
+        TextView reviewLabelTextView = findViewById(R.id.tv_ReviewLabel);
+        reviewLabelTextView.setVisibility(View.INVISIBLE);
+
         TextView urlTextView = findViewById(R.id.tv_AmazonURLTextView);
         urlTextView.setText("");
 
         TextView arTextView = findViewById(R.id.tv_AmazonRatingTextView);
         arTextView.setText("");
 
+        NonScrollListView reviewListView = (NonScrollListView) findViewById(R.id.lv_AmazonReviewsListView);
+        reviewListView.setAdapter(null);
+
         TextView apTextView = findViewById(R.id.tv_AmazonPriceTextView);
         apTextView.setText("");
 
         TextView apfTextView = findViewById(R.id.tv_AmazonPrimeFlagTextView);
         apfTextView.setText("");
-
-        TextView arwTextView = findViewById(R.id.tv_AmazonReviewTextView);
-        arwTextView.setText("");
 
         TextView olretTextView = findViewById(R.id.tv_OtherOnlineRetailers);
         olretTextView.setVisibility(View.INVISIBLE);
