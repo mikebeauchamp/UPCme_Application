@@ -32,8 +32,7 @@ public class UT17
                     "android.permission.CAMERA");
 
     @Test
-    public void ut17()
-    {
+    public void ut17() throws InterruptedException {
         mActivityScenarioRule.getScenario().onActivity(activity ->
         {
             activity.runOnUiThread(new Runnable()
@@ -54,7 +53,7 @@ public class UT17
             });
         });
 
-        SystemClock.sleep(2000);
+        Thread.sleep(2000);
         onView(withId(R.id.tv_ProductDescriptionTextView)).check(matches(isDisplayed()));
     }
 }

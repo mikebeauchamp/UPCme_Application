@@ -46,7 +46,8 @@ public class UT13
                 @Override
                 public void run()
                 {
-                    //Mimic application functionality when a 12 digit barcode is scanned with a first digit that begins with a 9
+                    //Mimic application functionality when a 12 digit barcode is scanned
+                    //that is not contained in the Barcode Lookup API
                     if (activity.isUpcABarcode("044670012826"))
                     {
                         activity.callBarcodeLookupAPI("044670012826");
@@ -59,7 +60,7 @@ public class UT13
             });
         });
 
-        Thread.sleep(1000);
+        Thread.sleep(3000);
 
 
         ViewInteraction textView = onView(
@@ -67,5 +68,7 @@ public class UT13
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView.inRoot(isDialog()).check(matches(isDisplayed()));
+
+        Thread.sleep(3000);
     }
 }

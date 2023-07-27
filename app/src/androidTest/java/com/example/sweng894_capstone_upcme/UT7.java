@@ -60,12 +60,14 @@ public class UT7 {
             });
         });
 
-        Thread.sleep(1000);
+        Thread.sleep(3000);
 
         ViewInteraction textView = onView(
                 allOf(withId(android.R.id.message), withText("The scanned barcode is not UPC-A barcode."),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView.inRoot(isDialog()).check(matches(isDisplayed()));
+
+        Thread.sleep(3000);
     }
 }

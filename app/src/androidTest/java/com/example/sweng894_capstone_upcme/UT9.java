@@ -13,13 +13,13 @@ import static org.hamcrest.Matchers.allOf;
 import android.view.View;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.GrantPermissionRule;
 
 import org.hamcrest.core.IsInstanceOf;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,12 +59,14 @@ public class UT9 {
             });
         });
 
-        Thread.sleep(1000);
+        Thread.sleep(3000);
 
         ViewInteraction textView = onView(
                 allOf(withId(android.R.id.message), withText("The scanned barcode cannot be processed in this application. UPC codes that begin with the number 3 denote National Drug Code and National Health related items."),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView.inRoot(isDialog()).check(matches(isDisplayed()));
+
+        Thread.sleep(3000);
    }
 }

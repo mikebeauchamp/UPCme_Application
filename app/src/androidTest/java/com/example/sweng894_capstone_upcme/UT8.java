@@ -58,12 +58,14 @@ public class UT8 {
             });
         });
 
-        Thread.sleep(1000);
+        Thread.sleep(3000);
 
         ViewInteraction textView = onView(
                 allOf(withId(android.R.id.message), withText("The scanned barcode cannot be processed in this application. UPC codes that begin with the number 2 denote random weight items, e.g. meat, marked in-store."),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView.inRoot(isDialog()).check(matches(isDisplayed()));
+
+        Thread.sleep(3000);
     }
 }
