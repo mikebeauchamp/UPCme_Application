@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity
             if (barcode.charAt(0) == '5' || barcode.charAt(0) == '9')
             {
                 builder.setMessage("The scanned barcode cannot be processed in this application. " +
-                        "UPC codes that begin with the number 5 or 9 are are for coupon use.");
+                        "UPC codes that begin with the number 5 or 9 are for coupon use.");
             }
         }
         else

@@ -113,7 +113,7 @@ public class UT23
 
         Thread.sleep(5000);
 
-        onView(withId(R.id.tv_AmazonPriceTextView)).check(matches(isDisplayed()));
+        onView(withId(R.id.tv_AmazonPriceTextView)).check(matches(not(withText(""))));
 
         Thread.sleep(2000);
     }

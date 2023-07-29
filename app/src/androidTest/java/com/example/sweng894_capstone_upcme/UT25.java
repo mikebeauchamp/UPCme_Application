@@ -82,8 +82,6 @@ public class UT25
                                 2)));
         materialButton.perform(scrollTo(), click());
 
-
-
         Thread.sleep(3000);
 
         onView(withId(R.id.tv_AmazonRatingTextView)).check(matches(withText("")));
@@ -110,10 +108,7 @@ public class UT25
 
         Thread.sleep(5000);
 
-        //onView(withId(R.id.tv_AmazonRatingTextView)).check(matches(isDisplayed()));
         onView(withId(R.id.tv_AmazonRatingTextView)).check(matches(withText(containsString("Amazon Rating:"))));
-
-
 
         Thread.sleep(2000);
     }

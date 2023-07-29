@@ -60,8 +60,8 @@ public class UT17
                 public void run()
                 {
                     //Mimic application functionality when a 12 digit barcode is scanned
-                    //that is not contained in the Barcode Lookup API which will not return Amazon ASIN
-                    //which will not return an Amazon Rating. When a barcode is not found, the UI will clear.
+                    //that is not contained in the Barcode Lookup API which will not return a
+                    //product description. When a barcode is not found, the UI will clear.
                     //This following test below is to ensure that control has been cleared.
 
                     if (activity.isUpcABarcode("044670012826"))
