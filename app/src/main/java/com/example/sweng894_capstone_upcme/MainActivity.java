@@ -504,7 +504,6 @@ public class MainActivity extends AppCompatActivity
                     if (!TextUtils.isEmpty(amazonPriceResult.get(0).getDetailPageURL()))
                     {
                         TextView urlTextView = findViewById(R.id.tv_AmazonURLTextView);
-                        //String url = Html.fromHtml("<a href=\"" + amazonPriceResult.get(0).getDetailPageURL() + "\" target=\"_blank\">Amazon Product Page</a>"));
                         urlTextView.setText(Html.fromHtml("<a href=\"" + amazonPriceResult.get(0).getDetailPageURL() + "\" target=\"_blank\">Amazon Product Page</a>"));
                         urlTextView.setMovementMethod(LinkMovementMethod.getInstance());
                         urlTextView.setVisibility(View.VISIBLE);

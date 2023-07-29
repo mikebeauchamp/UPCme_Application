@@ -8,6 +8,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -21,6 +22,7 @@ import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -37,6 +39,10 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
+/**
+ * Used to validate that the Amazon product webpage URL hyperlink control is displayed in the UI
+ * when a specific product is scanned.
+ */
 public class UT21
 {
     @Rule
@@ -50,34 +56,6 @@ public class UT21
 
     @Test
     public void ut21() throws InterruptedException {
-        mActivityScenarioRule.getScenario().onActivity(activity ->
-        {
-            activity.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    //Mimic application functionality when a 12 digit barcode is scanned
-                    if (activity.isUpcABarcode("079100520008"))
-                    {
-                        activity.callAmazonPriceRapidAPI("079100520008");
-                    }
-                    else
-                    {
-
-                    }
-                }
-            });
-        });
-
-        Thread.sleep(5000);
-
-        ViewInteraction amazonURLTextView = onView(
-                allOf(withId(R.id.tv_AmazonURLTextView),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
-                        isDisplayed()));
-
-        amazonURLTextView.check(matches(isDisplayed()));
 
         mActivityScenarioRule.getScenario().onActivity(activity ->
         {
@@ -118,14 +96,31 @@ public class UT21
 
         Thread.sleep(2000);
 
-        ViewInteraction amazonURLTextView2 = onView(
-                allOf(withId(R.id.tv_AmazonURLTextView),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
-                        isDisplayed()));
+        onView(withId(R.id.tv_AmazonURLTextView)).check(matches(withText("")));
 
-        amazonURLTextView2.check(matches(isDisplayed()));
+        mActivityScenarioRule.getScenario().onActivity(activity ->
+        {
+            activity.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    //Mimic application functionality when a 12 digit barcode is scanned
+                    if (activity.isUpcABarcode("079100520008"))
+                    {
+                        activity.callAmazonPriceRapidAPI("079100520008");
+                    }
+                    else
+                    {
 
+                    }
+                }
+            });
+        });
 
+        Thread.sleep(5000);
+
+        onView(withId(R.id.tv_AmazonURLTextView)).check(matches(withText("Amazon Product Page")));
         Thread.sleep(2000);
     }
 

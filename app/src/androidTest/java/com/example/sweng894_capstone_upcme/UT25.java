@@ -11,6 +11,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.StringContains.containsString;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,7 +110,10 @@ public class UT25
 
         Thread.sleep(5000);
 
-        onView(withId(R.id.tv_AmazonRatingTextView)).check(matches(isDisplayed()));
+        //onView(withId(R.id.tv_AmazonRatingTextView)).check(matches(isDisplayed()));
+        onView(withId(R.id.tv_AmazonRatingTextView)).check(matches(withText(containsString("Amazon Rating:"))));
+
+
 
         Thread.sleep(2000);
     }

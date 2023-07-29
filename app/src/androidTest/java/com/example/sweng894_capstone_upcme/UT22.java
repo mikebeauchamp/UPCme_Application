@@ -23,6 +23,10 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
+/**
+ * Used to validate the functionality of the Amazon Product webpage hyperlink control is both clickable
+ * and navigates the end user to the Amazon product page when clicked.
+ */
 public class UT22
 {
     @Rule

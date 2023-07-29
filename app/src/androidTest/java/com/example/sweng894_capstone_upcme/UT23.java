@@ -34,6 +34,9 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
+/**
+ * Used to validate that the Amazon Product Price control is displayed in the UI when a specific product is scanned.
+ */
 public class UT23
 {
     @Rule

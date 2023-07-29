@@ -23,6 +23,11 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
+/**
+ * Used to validate an online seller's name hyperlink, which is displayed in the Other Online
+ * Sellers list control in the UI, is both clickable and navigates the user to that seller’s
+ * product page when clicked.
+ */
 public class UT20
 {
     @Rule

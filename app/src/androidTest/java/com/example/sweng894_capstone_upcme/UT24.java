@@ -31,6 +31,9 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
+/**
+ * Used to validate that the Amazon Product Prime Flag control is displayed in the UI when a specific product is scanned.
+ */
 public class UT24
 {
     @Rule
@@ -93,9 +96,9 @@ public class UT24
                 public void run()
                 {
                     //Mimic application functionality when a 12 digit barcode is scanned
-                    if (activity.isUpcABarcode("079100520008"))
+                    if (activity.isUpcABarcode("052100023595"))
                     {
-                        activity.callAmazonPriceRapidAPI("079100520008");
+                        activity.callAmazonPriceRapidAPI("052100023595");
                     }
                     else
                     {
@@ -107,7 +110,7 @@ public class UT24
 
         Thread.sleep(5000);
 
-        onView(withId(R.id.tv_AmazonPrimeFlagTextView)).check(matches(isDisplayed()));
+        onView(withId(R.id.tv_AmazonPrimeFlagTextView)).check(matches(withText("This product is sold via Amazon Prime.")));
 
         Thread.sleep(2000);
     }

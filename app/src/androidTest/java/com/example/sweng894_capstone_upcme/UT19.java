@@ -39,6 +39,10 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
+/**
+ * Used to validate that the online sellers’ prices are displayed beneath the online seller names
+ * that are listed in the Other Online Seller Listview control in the UI.
+ */
 public class UT19
 {
     @Rule
@@ -49,45 +53,9 @@ public class UT19
     public GrantPermissionRule mGrantPermissionRule =
             GrantPermissionRule.grant(
                     "android.permission.CAMERA");
-    @Before
-    public void setUp()
-    {
-        mActivityScenarioRule.getScenario().onActivity(activity ->
-        {
-            activity.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    activity.callBarcodeLookupAPI("079100520008");
-                }
-            });
-        });
-    }
 
-    private static Matcher<View> getElementFromMatchAtPosition(final Matcher<View> matcher, final int position) {
-        return new BaseMatcher<View>()
-        {
-            int counter = 0;
-            @Override
-            public boolean matches(final Object item) {
-                if (matcher.matches(item)) {
-                    if(counter == position) {
-                        counter++;
-                        return true;
-                    }
-                    counter++;
-                }
-                return false;
-            }
 
-            @Override
-            public void describeTo(Description description)
-            {
-                description.appendText("Element at hierarchy position " + position);
-            }
-        };
-    }
+
 
     @Test
     public void ut19() throws InterruptedException
@@ -186,6 +154,30 @@ public class UT19
                 ViewParent parent = view.getParent();
                 return parent instanceof ViewGroup && parentMatcher.matches(parent)
                         && view.equals(((ViewGroup) parent).getChildAt(position));
+            }
+        };
+    }
+
+    private static Matcher<View> getElementFromMatchAtPosition(final Matcher<View> matcher, final int position) {
+        return new BaseMatcher<View>()
+        {
+            int counter = 0;
+            @Override
+            public boolean matches(final Object item) {
+                if (matcher.matches(item)) {
+                    if(counter == position) {
+                        counter++;
+                        return true;
+                    }
+                    counter++;
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description)
+            {
+                description.appendText("Element at hierarchy position " + position);
             }
         };
     }

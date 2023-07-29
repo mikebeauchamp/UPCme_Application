@@ -39,6 +39,10 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
+/**
+ * Used to validate that the online sellers’ names are displayed in the Other Online Sellers
+ * ListView control in the UI.
+ */
 public class UT18
 {
     @Rule
@@ -49,30 +53,6 @@ public class UT18
     public GrantPermissionRule mGrantPermissionRule =
             GrantPermissionRule.grant(
                     "android.permission.CAMERA");
-
-    private static Matcher<View> getElementFromMatchAtPosition(final Matcher<View> matcher, final int position) {
-        return new BaseMatcher<View>()
-        {
-            int counter = 0;
-            @Override
-            public boolean matches(final Object item) {
-                if (matcher.matches(item)) {
-                    if(counter == position) {
-                        counter++;
-                        return true;
-                    }
-                    counter++;
-                }
-                return false;
-            }
-
-            @Override
-            public void describeTo(Description description)
-            {
-                description.appendText("Element at hierarchy position " + position);
-            }
-        };
-    }
 
     @Test
     public void ut18() throws InterruptedException
@@ -168,6 +148,30 @@ public class UT18
                 ViewParent parent = view.getParent();
                 return parent instanceof ViewGroup && parentMatcher.matches(parent)
                         && view.equals(((ViewGroup) parent).getChildAt(position));
+            }
+        };
+    }
+
+    private static Matcher<View> getElementFromMatchAtPosition(final Matcher<View> matcher, final int position) {
+        return new BaseMatcher<View>()
+        {
+            int counter = 0;
+            @Override
+            public boolean matches(final Object item) {
+                if (matcher.matches(item)) {
+                    if(counter == position) {
+                        counter++;
+                        return true;
+                    }
+                    counter++;
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description)
+            {
+                description.appendText("Element at hierarchy position " + position);
             }
         };
     }
