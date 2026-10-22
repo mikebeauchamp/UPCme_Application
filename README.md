@@ -8,12 +8,14 @@ This project was designed as a barcode-based shopping comparison app and served 
 
 When a shopper scans an item in a brick-and-mortar store, the app checks whether the UPC is supported, then retrieves product data and pricing information from external services so the user can compare the in-store item against online alternatives.
 
-The app uses a two-call architecture:
+The app uses two active data sources:
 
 1. A Barcode Lookup API call returns the product record and available online retailer pricing.
-2. A separate RapidAPI Amazon call flow retrieves Amazon pricing, product details, and review data for the same item.
+2. A separate RapidAPI Amazon flow retrieves Amazon pricing, product details, and review data for the same item.
 
 This allows users to compare a physical product they are holding with broader online market pricing and Amazon data.
+
+The Rainforest API key was included in the project configuration as a planned integration, but it is not used in the current implementation.
 
 ## Features
 
@@ -27,19 +29,19 @@ This allows users to compare a physical product they are holding with broader on
 
 ## How the App Works
 
-When a UPC is scanned, the app performs two primary API requests:
+When a UPC is scanned, the app performs two main data flows:
 
-### 1) Barcode Lookup request
+### 1) Barcode Lookup flow
 
 This call retrieves the product title, description, image, and online retailer pricing data such as stores and prices from the barcode lookup source.
 
 The app filters the returned pricing data to U.S. stores that were updated within the last year, then displays those stores in the app UI.
 
-### 2) Amazon RapidAPI request flow
+### 2) Amazon RapidAPI flow
 
 This is a separate process that uses the barcode value to identify the ASIN, then requests Amazon pricing and review details.
 
-The Amazon flow includes:
+The Amazon flow includes multiple RapidAPI calls:
 
 - UPC to ASIN lookup
 - Amazon price and rating lookup
@@ -88,11 +90,10 @@ This app expects API keys to be available at build time. In Android Studio, crea
 
 ```properties
 barcodeAPI=YOUR_BARCODE_LOOKUP_API_KEY
-rainforestAPI=YOUR_RAINFOREST_API_KEY
 rapidAPI=YOUR_RAPIDAPI_KEY
 ```
 
-The manifest references these values through the Gradle secrets plugin, so they must be available before running the app.
+The manifest references these values through the Gradle secrets plugin, so they must be available before running the app. The Rainforest key is included in the manifest metadata but is not currently used by the app implementation.
 
 ## Build and Run
 
@@ -125,7 +126,8 @@ The app requests:
 ## Notes
 
 - The app currently supports UPC-A barcodes and intentionally filters out other barcode formats or unsupported UPC prefixes.
-- The comparison experience is built around two separate API calls: product/retailer lookup and Amazon data lookup.
+- The comparison experience is built around two active data sources: product/retailer lookup and Amazon data lookup.
+- The Amazon flow triggers multiple RapidAPI requests during a single scan.
 - API keys are required for the app to retrieve live product data.
 - The repository does not include secret values in source control.
 
