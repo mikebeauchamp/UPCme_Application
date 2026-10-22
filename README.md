@@ -4,7 +4,7 @@ UPCme is an Android application that scans UPC-A barcodes and retrieves product 
 
 ## Overview
 
-This project was designed as a barcode-based shopping comparison app and served as the author’s capstone project during their Master of Science in Software Engineering at Penn State. It also represents one of the author’s first attempts at mobile development, created to explore Android app development, barcode scanning, API integration, and UI design in a practical, real-world use case.
+This project was designed as a barcode-based shopping comparison app and served as my capstone project during my Master of Science in Software Engineering at Penn State. It was my first attempt at mobile development, created to explore Android app development, barcode scanning, API integration, and UI design in a practical, real-world use case.
 
 When a shopper scans an item in a brick-and-mortar store, the app checks whether the UPC is supported, then retrieves product data and pricing information from external services so the user can compare the in-store item against online alternatives.
 
